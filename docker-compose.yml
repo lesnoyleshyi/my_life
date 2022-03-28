@@ -12,7 +12,7 @@ services:
     ports:
       - "80:80"
     environment:
-      - POSTGRES_HOST=postgres
+      - POSTGRES_HOST=postgres_my_life
       - POSTGRES_PORT=5432
       - POSTGRES_DB=taskstore
       - POSTGRES_USER=go_user
@@ -23,10 +23,10 @@ services:
 
   postgres:
     image: postgres:14
-    container_name: postgres
+    container_name: postgres_my_life
     networks:
       - aboba_network
-    hostname: postgres
+    hostname: postgres_my_life
     ports:
       - "5432:5432"
     environment:
