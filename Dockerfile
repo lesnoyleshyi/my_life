@@ -4,7 +4,7 @@ RUN mkdir -p /api
 ADD . /api
 WORKDIR /api
 
-RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go_build -o ./api
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o ./api
 
 FROM scratch
 
