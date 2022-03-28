@@ -1,0 +1,49 @@
+services:
+  api:
+    depends_on: postgres
+    build: .
+    container_name: api
+    networks:
+      - local_network
+    hostname: api
+    ports:
+      - "80:80"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=taskstore
+      - POSTGRES_USER=go_user
+      - POSTGRES_PASSWORD=8246go
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  database:
+    postgres:
+      image: postgres:14
+      container_name: postgres
+      networks:
+        - local_network
+      hostname: postgres
+      ports:
+        - "5432:5432"
+      environment:
+        - POSRGRES_DB=taskstore
+        - POSTGRES_USER=go_user
+        - POSTGRES_PASSWORD=8246go
+      volumes:
+        - postgres_storage:/var/lib/postgresql/data
+        - ./init.sql:/docker-entrypoint-initdb.d/1_init.sql
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U go_user -d taskstore"]
+        interval: 10s
+        timeout: 45s
+        retries: 3
+      restart: on-failure
+
+volumes:
+  postgres_storage:
+
+networks:
+  local_network:
+    driver: bridge
