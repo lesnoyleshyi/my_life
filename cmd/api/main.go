@@ -27,13 +27,7 @@ func main() {
 	handler := handlers.NewTasksHandler(service)
 	r := chi.NewRouter()
 
-	r.Get("/hello", func(writer http.ResponseWriter, request *http.Request) {
-		if _, err := writer.Write([]byte("Sosi dick")); err != nil {
-			writer.WriteHeader(http.StatusInternalServerError)
-		}
-	})
-
-	r.Mount("/test", handler.Routes())
+	r.Mount("/", handler.Routes())
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
