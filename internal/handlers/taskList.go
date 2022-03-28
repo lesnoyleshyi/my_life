@@ -23,10 +23,6 @@ func NewTasksHandler(service *services.TaskService) *tasks {
 func (t *tasks) Routes() chi.Router {
 	r := chi.NewRouter()
 
-	r.Get("/hello", http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		writer.Write([]byte("Sosi dick"))
-	}))
-
 	r.Route("/lists", func(r chi.Router) {
 		r.Post("/", t.createList)
 	})
