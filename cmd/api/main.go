@@ -33,7 +33,7 @@ func main() {
 		}
 	})
 
-	r.Mount("/", handler.Routes())
+	r.Mount("/test", handler.Routes())
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
