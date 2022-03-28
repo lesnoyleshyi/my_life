@@ -10,7 +10,7 @@ services:
       - aboba_network
     hostname: api
     ports:
-      - "80:80"
+      - "8080:8080"
     environment:
       - POSTGRES_HOST=postgres_my_life
       - POSTGRES_PORT=5432
@@ -27,8 +27,6 @@ services:
     networks:
       - aboba_network
     hostname: postgres_my_life
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_DB=taskstore
       - POSTGRES_USER=go_user
