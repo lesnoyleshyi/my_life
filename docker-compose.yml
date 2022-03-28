@@ -1,10 +1,12 @@
+version: "3.9"
+
 services:
   api:
     depends_on: postgres
     build: .
     container_name: api
     networks:
-      - local_network
+      - aboba_network
     hostname: api
     ports:
       - "80:80"
@@ -18,12 +20,11 @@ services:
       restart_policy:
         condition: on-failure
 
-
   postgres:
     image: postgres:14
     container_name: postgres
     networks:
-      - local_network
+      - aboba_network
     hostname: postgres
     ports:
       - "5432:5432"
@@ -45,5 +46,5 @@ volumes:
   postgres_storage:
 
 networks:
-  local_network:
+  aboba_network:
     driver: bridge
