@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS lists (
-    id              integer PRIMARY KEY,
+    id              SERIAL PRIMARY KEY,
     emoji           varchar,
     title           varchar,
     order_          integer,
