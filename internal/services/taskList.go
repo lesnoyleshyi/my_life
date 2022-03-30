@@ -15,5 +15,5 @@ func NewTaskService(repo repository.Repository) *TaskService {
 }
 
 func (t TaskService) CreateList(ctx context.Context, list domain.TaskList) error {
-	return t.repo.CreateList(ctx, list)
+	return t.repo.CreateList(ctx, &list)
 }

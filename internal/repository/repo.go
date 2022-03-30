@@ -21,5 +21,5 @@ func NewRepository(pgxPool *pgxpool.Pool) Repository {
 }
 
 type Repository interface {
-	CreateList(ctx context.Context, list domain.TaskList) error
+	CreateList(ctx context.Context, list *domain.TaskList) error
 }

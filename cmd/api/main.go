@@ -29,5 +29,5 @@ func main() {
 
 	r.Mount("/", handler.Routes())
 
-	log.Fatal(http.ListenAndServe("postgres_my_life:8080", r))
+	log.Fatal(http.ListenAndServe("api:8080", r))
 }
