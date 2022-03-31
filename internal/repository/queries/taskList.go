@@ -6,7 +6,7 @@ import (
 	"my_life/internal/domain"
 )
 
-const createTaskList = `INSERT INTO TABLE lists (UId, emoji, title, order_, relevance_time)
+const createTaskList = `INSERT INTO lists (UId, emoji, title, order_, relevance_time)
 						VALUES ($1, $2, $3, $4, $5);`
 
 func (q *Queries) CreateList(ctx context.Context, l *domain.TaskList) error {
