@@ -68,7 +68,7 @@ func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "No user with such id!", http.StatusBadRequest)
 		return
 	}
-	if lists, err := t.service.GetListsByUId(context.TODO(), UId); err != nil {
+	if lists, err := t.service.GetListsByUId(context.TODO(), UId); err == nil {
 		w.Write([]byte("debug message"))
 		for i, list := range lists {
 			fmt.Fprintf(w, "%d list: %v\n", i, list)
