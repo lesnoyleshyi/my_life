@@ -65,7 +65,7 @@ func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
 
 	UId, err := strconv.Atoi(sUId)
 	if sUId == "" || err != nil {
-		http.Error(w, "No user with such id!", http.StatusBadRequest)
+		http.Error(w, "No user with such id! Provide it via url parameter 'UId'", http.StatusBadRequest)
 		return
 	}
 	if lists, err := t.service.GetListsByUId(context.TODO(), UId); err == nil {
