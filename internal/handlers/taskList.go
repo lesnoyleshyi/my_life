@@ -8,10 +8,12 @@ import (
 	"my_life/internal/domain"
 	"my_life/internal/services"
 	"net/http"
+	"strconv"
 )
 
 type TasksHandler interface {
 	CreateList(ctx context.Context, list *domain.TaskList) error
+	GetListsById(ctx context.Context, UId int) ([]domain.TaskList, error)
 }
 
 type tasks struct {
@@ -27,20 +29,21 @@ func (t *tasks) Routes() chi.Router {
 
 	r.Route("/lists", func(r chi.Router) {
 		r.Post("/", t.createList)
-		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			_, err := fmt.Fprintf(w, "test ok\n")
-			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
-			}
-		})
+		//r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		//	_, err := fmt.Fprintf(w, "test ok\n")
+		//	if err != nil {
+		//		w.WriteHeader(http.StatusInternalServerError)
+		//	}
+		//})
+		r.Get("/", t.getListsById)
 	})
 
 	return r
 }
 
-func (t tasks) CreateList(ctx context.Context, list *domain.TaskList) error {
-	return t.service.CreateList(ctx, list)
-}
+//func (t tasks) CreateList(ctx context.Context, list *domain.TaskList) error {
+//	return t.service.CreateList(ctx, list)
+//}
 
 func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
 	var list domain.TaskList
@@ -53,5 +56,21 @@ func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
 	if err := t.service.CreateList(context.Background(), &list); err != nil {
 		http.Error(w, fmt.Sprintf("error adding data to db: %s", err), http.StatusBadRequest)
 		return
+	}
+}
+
+func (t tasks) getListsById(w http.ResponseWriter, r *http.Request) {
+	sUId := r.URL.Query().Get("UId")
+	defer func() { _ = r.Body.Close() }()
+
+	UId, err := strconv.Atoi(sUId)
+	if sUId == "" || err != nil {
+		http.Error(w, "No user with such id!", http.StatusBadRequest)
+		return
+	}
+	if lists, err := t.service.GetListsById(context.TODO(), UId); err != nil {
+		for i, list := range lists {
+			fmt.Fprintf(w, "%d list: %v\n", i, list)
+		}
 	}
 }

@@ -17,3 +17,7 @@ func NewTaskService(repo repository.Repository) *TaskService {
 func (t TaskService) CreateList(ctx context.Context, list *domain.TaskList) error {
 	return t.repo.CreateList(ctx, list)
 }
+
+func (t TaskService) GetListsById(ctx context.Context, UId int) ([]domain.TaskList, error) {
+	return t.repo.GetListsById(ctx, UId)
+}
