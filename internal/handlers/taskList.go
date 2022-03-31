@@ -69,10 +69,12 @@ func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if lists, err := t.service.GetListsByUId(context.TODO(), UId); err != nil {
+		w.Write([]byte("debug message"))
 		for i, list := range lists {
 			fmt.Fprintf(w, "%d list: %v\n", i, list)
 		}
 	} else {
 		http.Error(w, fmt.Sprintf("error receiving lists by id: %s", err), http.StatusInternalServerError)
 	}
+	w.Write([]byte("another debug message"))
 }
