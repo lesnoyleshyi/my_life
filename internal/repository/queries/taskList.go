@@ -45,7 +45,7 @@ func (q *Queries) GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList
 
 	for rows.Next() {
 		var l domain.TaskList
-		err := rows.Scan(&l.Emoji, &l.Title, &l.Order, &l.RelevanceTime)
+		err := rows.Scan(&l.Id, &l.UId, &l.Emoji, &l.Title, &l.Order, &l.RelevanceTime)
 		if err != nil {
 			return nil, fmt.Errorf("error scanning data from row to struct: %w", err)
 		}
