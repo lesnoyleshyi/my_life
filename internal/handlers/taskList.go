@@ -13,7 +13,7 @@ import (
 
 type TasksHandler interface {
 	CreateList(ctx context.Context, list *domain.TaskList) error
-	GetListsById(ctx context.Context, UId int) ([]domain.TaskList, error)
+	GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList, error)
 }
 
 type tasks struct {
@@ -35,7 +35,7 @@ func (t *tasks) Routes() chi.Router {
 		//		w.WriteHeader(http.StatusInternalServerError)
 		//	}
 		//})
-		r.Get("/", t.getListsById)
+		r.Get("/", t.getListsByUId)
 	})
 
 	return r
@@ -59,7 +59,7 @@ func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (t tasks) getListsById(w http.ResponseWriter, r *http.Request) {
+func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
 	sUId := r.URL.Query().Get("UId")
 	defer func() { _ = r.Body.Close() }()
 
@@ -68,7 +68,7 @@ func (t tasks) getListsById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "No user with such id!", http.StatusBadRequest)
 		return
 	}
-	if lists, err := t.service.GetListsById(context.TODO(), UId); err != nil {
+	if lists, err := t.service.GetListsByUId(context.TODO(), UId); err != nil {
 		for i, list := range lists {
 			fmt.Fprintf(w, "%d list: %v\n", i, list)
 		}

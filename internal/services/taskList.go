@@ -18,6 +18,6 @@ func (t TaskService) CreateList(ctx context.Context, list *domain.TaskList) erro
 	return t.repo.CreateList(ctx, list)
 }
 
-func (t TaskService) GetListsById(ctx context.Context, UId int) ([]domain.TaskList, error) {
-	return t.repo.GetListsById(ctx, UId)
+func (t TaskService) GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList, error) {
+	return t.repo.GetListsByUId(ctx, UId)
 }

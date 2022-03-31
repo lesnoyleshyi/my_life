@@ -33,7 +33,7 @@ func (q *Queries) CreateList(ctx context.Context, l *domain.TaskList) error {
 
 const selectByUId = `SELECT * FROM lists WHERE UId=$1;`
 
-func (q *Queries) GetListsById(ctx context.Context, UId int) ([]domain.TaskList, error) {
+func (q *Queries) GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList, error) {
 
 	rows, err := q.pool.Query(ctx, selectByUId, UId)
 	if err != nil {
