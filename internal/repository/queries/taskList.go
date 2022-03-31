@@ -6,8 +6,8 @@ import (
 	"my_life/internal/domain"
 )
 
-const createTaskList = `INSERT INTO TABLE lists (emoji, title, order_, relevance_time)
-						VALUES ($1, $2, $3, $4);`
+const createTaskList = `INSERT INTO TABLE lists (UId, emoji, title, order_, relevance_time)
+						VALUES ($1, $2, $3, $4, $5);`
 
 func (q *Queries) CreateList(ctx context.Context, l *domain.TaskList) error {
 
@@ -17,7 +17,7 @@ func (q *Queries) CreateList(ctx context.Context, l *domain.TaskList) error {
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	res, err := q.pool.Exec(ctx, createTaskList, l.Emoji, l.Title, l.Order, l.RelevanceTime)
+	res, err := q.pool.Exec(ctx, createTaskList, l.UId, l.Emoji, l.Title, l.Order, l.RelevanceTime)
 	if err != nil {
 		return fmt.Errorf("error adding data to database: %w", err)
 	}
