@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"my_life/internal/domain"
@@ -10,7 +11,7 @@ import (
 )
 
 type TasksHandler interface {
-	CreateList(ctx context.Context, list domain.TaskList) error
+	CreateList(ctx context.Context, list *domain.TaskList) error
 }
 
 type tasks struct {
@@ -37,10 +38,20 @@ func (t *tasks) Routes() chi.Router {
 	return r
 }
 
-func (t tasks) CreateList(ctx context.Context, list domain.TaskList) error {
+func (t tasks) CreateList(ctx context.Context, list *domain.TaskList) error {
 	return t.service.CreateList(ctx, list)
 }
 
 func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
+	var list domain.TaskList
 
+	defer func() { _ = r.Body.Close() }()
+	if err := json.NewDecoder(r.Body).Decode(&list); err != nil {
+		http.Error(w, fmt.Sprintf("error unnarshalling JSON: %s", err), http.StatusBadRequest)
+		return
+	}
+	if err := t.service.CreateList(context.Background(), &list); err != nil {
+		http.Error(w, fmt.Sprintf("error adding data to db: %s", err), http.StatusBadRequest)
+		return
+	}
 }
