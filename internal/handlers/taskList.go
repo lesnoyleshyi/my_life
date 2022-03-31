@@ -72,5 +72,7 @@ func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
 		for i, list := range lists {
 			fmt.Fprintf(w, "%d list: %v\n", i, list)
 		}
+	} else {
+		http.Error(w, fmt.Sprintf("error receiving lists by id: %s", err), http.StatusInternalServerError)
 	}
 }
