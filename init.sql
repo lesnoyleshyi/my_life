@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS tasks (
   completedDays     varchar,    -- почему в оригинале это массив строк, а не число?
   note              varchar,
   order_            integer,
-  repeatType        string,
-  daysOfWeek        string,     -- это типа "среда", "wed" и т.д.? Нам наверное, надо в enum это засунуть. Почему в оригинале это массив?
-  daysOfMonth       string,     -- аналогично предыдущему
+  repeatType        varchar,
+  daysOfWeek        varchar,     -- это типа "среда", "wed" и т.д.? Нам наверное, надо в enum это засунуть. Почему в оригинале это массив?
+  daysOfMonth       varchar,     -- аналогично предыдущему
   concreteDate      date,
   dateStart         date,
   dateEnd           date,
