@@ -52,7 +52,7 @@ func (q *Queries) GetUserById(ctx context.Context, UId uint64) (*domain.User, er
 
 	var user domain.User
 
-	if err := rows.Scan(&user); err != nil {
+	if err := rows.Scan(&user.UId); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, fmt.Errorf("no user with id=%d is in database", UId)
 		}
