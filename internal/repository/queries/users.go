@@ -3,9 +3,15 @@ package queries
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v4"
 	"my_life/internal/domain"
-	"my_life/internal/repository"
 )
+
+var TxOpts = pgx.TxOptions{
+	IsoLevel:       pgx.ReadCommitted,
+	AccessMode:     pgx.ReadOnly,
+	DeferrableMode: pgx.Deferrable,
+}
 
 const createUserQuery = `INSERT INTO users (id) VALUES ($1)`
 
@@ -31,7 +37,7 @@ const getUserQuery = `SELECT id FROM users WHERE id=$1`
 
 // GetUserById uses transaction only for educational purposes
 func (q *Queries) GetUserById(ctx context.Context, UId uint64) (*domain.User, error) {
-	tx, err := q.pool.BeginTx(ctx, repository.TxOpts)
+	tx, err := q.pool.BeginTx(ctx, TxOpts)
 	if err != nil {
 		return nil, fmt.Errorf("unable brgin transaction: %w", err)
 	}

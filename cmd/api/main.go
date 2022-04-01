@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/go-chi/chi/v5"
 	"log"
+	"my_life/internal/handlers"
 	"net/http"
 
-	"my_life/internal/handlers"
 	"my_life/internal/repository"
 	"my_life/internal/services"
 	"my_life/pkg/postgres"
