@@ -29,28 +29,18 @@ func (t *tasks) Routes() chi.Router {
 
 	r.Route("/lists", func(r chi.Router) {
 		r.Post("/", t.createList)
-		//r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		//	_, err := fmt.Fprintf(w, "test ok\n")
-		//	if err != nil {
-		//		w.WriteHeader(http.StatusInternalServerError)
-		//	}
-		//})
 		r.Get("/", t.getListsByUId)
 	})
 
 	return r
 }
 
-//func (t tasks) CreateList(ctx context.Context, list *domain.TaskList) error {
-//	return t.service.CreateList(ctx, list)
-//}
-
 func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
 	var list domain.TaskList
 
 	defer func() { _ = r.Body.Close() }()
 	if err := json.NewDecoder(r.Body).Decode(&list); err != nil {
-		http.Error(w, fmt.Sprintf("error unnarshalling JSON: %s", err), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("error unmarshalling JSON: %s", err), http.StatusBadRequest)
 		return
 	}
 	if err := t.service.CreateList(context.Background(), &list); err != nil {

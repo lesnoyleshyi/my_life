@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS lists (
     emoji           varchar,
     title           varchar,
     order_          integer,
-    relevanceTime   timestamp
+    relevanceTime   timestamptz
                                  );
 
 CREATE TABLE IF NOT EXISTS sections (
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS sections (
     listId          integer REFERENCES  lists ON DELETE CASCADE,
     title           varchar,
     order_          integer,
-    relevanceTime   timestamp
+    relevanceTime   timestamptz
 );
 
 CREATE TABLE IF NOT EXISTS tasks (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS tasks (
   dateStart         date,
   dateEnd           date,
   dateReminder      date,
-  relevanceTime     timestamp
+  relevanceTime     timestamptz
 );
 
 CREATE TABLE IF NOT EXISTS subtasks (
@@ -49,5 +49,5 @@ CREATE TABLE IF NOT EXISTS subtasks (
   title             varchar,
   isCompleted       boolean,
   order_            integer,
-  relevanceTime     timestamp
+  relevanceTime     timestamptz
 );
