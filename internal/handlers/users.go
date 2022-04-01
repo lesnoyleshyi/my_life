@@ -41,6 +41,7 @@ func (t tasks) getUserById(w http.ResponseWriter, r *http.Request) {
 	user, err := t.service.GetUserById(context.TODO(), uint64(Uid))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error recieving user by this UId: %s", err), http.StatusInternalServerError)
+		return
 	}
 	if _, err := fmt.Fprintf(w, "There is user with UId=%d", user.UId); err != nil {
 		http.Error(w, "Something went wrong on the server side", http.StatusInternalServerError)
