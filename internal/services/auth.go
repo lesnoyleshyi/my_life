@@ -22,7 +22,7 @@ func (s AuthService) CreateUser(ctx context.Context, user *domain.User) (int, er
 	if err != nil {
 		return 0, err
 	}
-	return s.repo.CreateUser(context.TODO(), *user)
+	return s.repo.CreateUser(context.TODO(), user)
 }
 
 func (s AuthService) GetUser(ctx context.Context, username string, password string) (*domain.User, error) {

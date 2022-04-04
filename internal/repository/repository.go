@@ -7,7 +7,7 @@ import (
 )
 
 type Authorisation interface {
-	CreateUser(ctx context.Context, user domain.User) (int, error)
+	CreateUser(ctx context.Context, user *domain.User) (int, error)
 	GetUser(ctx context.Context, username string, password string) (*domain.User, error)
 }
 

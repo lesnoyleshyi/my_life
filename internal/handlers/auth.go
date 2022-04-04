@@ -15,7 +15,7 @@ func (h *handler) signUp(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "error inmarshalling json: %v", err)
 	}
 
-	userId, err := h.services.CreateUser(context.TODO(), user)
+	userId, err := h.services.CreateUser(context.TODO(), &user)
 	if err != nil {
 		fmt.Fprintf(w, "error creating user: %v", err)
 	} else {

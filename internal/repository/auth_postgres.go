@@ -18,7 +18,7 @@ func NewAuthPostgres(pool *pgxpool.Pool) *authPostgres {
 const createUserQuery = `INSERT INTO users (username, phone, email, passwdHash, relevanceTime)
 													Values ($1, $2, $3, $4, $5 RETURNING id);`
 
-func (a authPostgres) CreateUser(ctx context.Context, u domain.User) (int, error) {
+func (a authPostgres) CreateUser(ctx context.Context, u *domain.User) (int, error) {
 	var userId int
 
 	tx, err := a.pool.Begin(ctx)
