@@ -1,10 +1,15 @@
 CREATE TABLE IF NOT EXISTS users (
-    id              SERIAL PRIMARY KEY
+    id              SERIAL  PRIMARY KEY,
+    username        varchar NOT NULL,
+    phone           varchar,
+    email           varchar,
+    passwdHash      varchar NOT NULL,
+    relevanceTime   timestamptz
 );
 
 CREATE TABLE IF NOT EXISTS lists (
-    id              SERIAL  PRIMARY KEY,             -- pimary key можно определять и на varchar. мб стоит использовать более "говорящие" названия
-    UId             integer REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE,
+    id              SERIAL  PRIMARY KEY,
+    UId             integer REFERENCES users ON DELETE CASCADE,
     emoji           varchar,
     title           varchar,
     order_          integer,

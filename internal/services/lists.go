@@ -3,12 +3,21 @@ package services
 import (
 	"context"
 	"my_life/internal/domain"
+	"my_life/internal/repository"
 )
 
-func (t TaskService) CreateList(ctx context.Context, list *domain.TaskList) error {
-	return t.repo.CreateList(ctx, list)
+type ListService struct {
+	repo repository.TaskList
 }
 
-func (t TaskService) GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList, error) {
-	return t.repo.GetListsByUId(ctx, UId)
+func NewListService(repo repository.Repository) *ListService {
+	return &ListService{repo: repo}
+}
+
+func (s ListService) CreateList(ctx context.Context, list *domain.TaskList) error {
+	return s.repo.CreateList(ctx, list)
+}
+
+func (s ListService) GetListsByUId(ctx context.Context, UId int64) ([]domain.TaskList, error) {
+	return s.repo.GetListsByUId(ctx, UId)
 }

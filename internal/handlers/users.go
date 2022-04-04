@@ -2,29 +2,12 @@ package handlers
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"my_life/internal/domain"
 	"net/http"
 	"strconv"
 )
 
-func (t tasks) createUser(w http.ResponseWriter, r *http.Request) {
-	var user domain.User
-
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, "error unmarshalling JSON to struct", http.StatusBadRequest)
-		return
-	}
-
-	if err := t.service.CreateUser(context.TODO(), &user); err != nil {
-		http.Error(w, fmt.Sprint(err), http.StatusInternalServerError)
-	} else {
-		fmt.Fprintf(w, "User with id=%d added to database", user.UId)
-	}
-}
-
-func (t tasks) getUserById(w http.ResponseWriter, r *http.Request) {
+func (h handler) getUserById(w http.ResponseWriter, r *http.Request) {
 	sUId := r.URL.Query().Get("UId")
 
 	if sUId == "" {
@@ -38,12 +21,12 @@ func (t tasks) getUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := t.service.GetUserById(context.TODO(), uint64(Uid))
+	user, err := h.services.GetUserById(context.TODO(), int64(Uid))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error recieving user by this UId: %s", err), http.StatusInternalServerError)
 		return
 	}
-	if _, err := fmt.Fprintf(w, "There is user with UId=%d", user.UId); err != nil {
+	if _, err := fmt.Fprintf(w, "There is user with UId=%d in database", user.UId); err != nil {
 		http.Error(w, "Something went wrong on the server side", http.StatusInternalServerError)
 	}
 }

@@ -2,33 +2,32 @@ package handlers
 
 import (
 	"github.com/go-chi/chi/v5"
-	"my_life/internal/repository"
 	"my_life/internal/services"
 )
 
-type TasksHandler interface {
-	repository.Repository
+type handler struct {
+	services *services.Service
 }
 
-type tasks struct {
-	service TasksHandler
+func NewHandler(service *services.Service) *handler {
+	return &handler{service}
 }
 
-func NewTasksHandler(service *services.TaskService) *tasks {
-	return &tasks{service: service}
-}
-
-func (t *tasks) Routes() chi.Router {
+func (h *handler) Routes() chi.Router {
 	r := chi.NewRouter()
 
+	r.Route("/", func(r chi.Router) {
+		r.Post("/sign-up", h.signUp)
+		r.Post("/sign-in", h.signIn)
+	})
+
 	r.Route("/lists", func(r chi.Router) {
-		r.Post("/", t.createList)
-		r.Get("/", t.getListsByUId)
+		r.Post("/", h.createList)
+		r.Get("/", h.getListsByUId)
 	})
 
 	r.Route("/users", func(r chi.Router) {
-		r.Post("/", t.createUser)
-		r.Get("/", t.getUserById)
+		r.Get("/", h.getUserById)
 	})
 
 	return r

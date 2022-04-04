@@ -22,9 +22,9 @@ func main() {
 
 	repo := repository.NewRepository(dbPool)
 
-	service := services.NewTaskService(repo)
+	service := services.NewService(repo)
 
-	handler := handlers.NewTasksHandler(service)
+	handler := handlers.NewHandler(service)
 	r := chi.NewRouter()
 
 	r.Mount("/", handler.Routes())

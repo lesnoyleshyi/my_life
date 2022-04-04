@@ -4,24 +4,32 @@ import (
 	"context"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"my_life/internal/domain"
-	"my_life/internal/repository/queries"
 )
 
-type repo struct {
-	*queries.Queries
-	pool *pgxpool.Pool
+type Authorisation interface {
+	CreateUser(ctx context.Context, user domain.User) (int, error)
+	GetUser(ctx context.Context, username string, password string) (*domain.User, error)
 }
 
-func NewRepository(pgxPool *pgxpool.Pool) Repository {
-	return &repo{
-		Queries: queries.New(pgxPool),
-		pool:    pgxPool,
+type TaskList interface {
+	CreateList(ctx context.Context, l *domain.TaskList) error
+	GetListsByUId(ctx context.Context, UId int64) ([]domain.TaskList, error)
+}
+
+type User interface {
+	GetUserById(ctx context.Context, UId int64) (*domain.User, error)
+}
+
+type Repository struct {
+	Authorisation
+	TaskList
+	User
+}
+
+func NewRepository(pgxPool *pgxpool.Pool) *Repository {
+	return &Repository{
+		Authorisation: NewAuthPostgres(pgxPool),
+		TaskList:      NewListRepo(pgxPool),
+		User:          NewUserRepo(pgxPool),
 	}
-}
-
-type Repository interface {
-	CreateList(ctx context.Context, list *domain.TaskList) error
-	GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList, error)
-	CreateUser(ctx context.Context, user *domain.User) error
-	GetUserById(ctx context.Context, UId uint64) (*domain.User, error)
 }

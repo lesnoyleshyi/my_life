@@ -3,7 +3,12 @@ package domain
 import "time"
 
 type User struct {
-	UId int
+	UId           int       `json:"id"`
+	Name          string    `json:"name"`
+	Phone         string    `json:"phone"`
+	Email         string    `json:"email"`
+	Password      string    `json:"password"`
+	RelevanceTime time.Time `json:"relevanceTime"`
 }
 
 type TaskList struct {

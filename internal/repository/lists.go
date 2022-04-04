@@ -1,23 +1,31 @@
-package queries
+package repository
 
 import (
 	"context"
 	"fmt"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"my_life/internal/domain"
 )
+
+type listRepo struct {
+	pool *pgxpool.Pool
+}
+
+func NewListRepo(pool *pgxpool.Pool) *listRepo {
+	return &listRepo{pool: pool}
+}
 
 const createTaskList = `INSERT INTO lists (UId, emoji, title, order_, relevanceTime)
 						VALUES ($1, $2, $3, $4, $5);`
 
-func (q *Queries) CreateList(ctx context.Context, l *domain.TaskList) error {
-
-	tx, err := q.pool.Begin(ctx)
+func (l *listRepo) CreateList(ctx context.Context, lll *domain.TaskList) error {
+	tx, err := l.pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("error initialising transaction: %w", err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	res, err := q.pool.Exec(ctx, createTaskList, l.UId, l.Emoji, l.Title, l.Order, l.RelevanceTime)
+	res, err := l.pool.Exec(ctx, createTaskList, lll.UId, lll.Emoji, lll.Title, lll.Order, lll.RelevanceTime)
 	if err != nil {
 		return fmt.Errorf("error adding data to database: %w", err)
 	}
@@ -33,9 +41,8 @@ func (q *Queries) CreateList(ctx context.Context, l *domain.TaskList) error {
 
 const selectByUId = `SELECT * FROM lists WHERE UId=$1;`
 
-func (q *Queries) GetListsByUId(ctx context.Context, UId int) ([]domain.TaskList, error) {
-
-	rows, err := q.pool.Query(ctx, selectByUId, UId)
+func (l *listRepo) GetListsByUId(ctx context.Context, UId int64) ([]domain.TaskList, error) {
+	rows, err := l.pool.Query(ctx, selectByUId, UId)
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving data from database, %w", err)
 	}

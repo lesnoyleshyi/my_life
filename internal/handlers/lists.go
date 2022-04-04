@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
+func (h handler) createList(w http.ResponseWriter, r *http.Request) {
 	var list domain.TaskList
 
 	defer func() { _ = r.Body.Close() }()
@@ -17,13 +17,13 @@ func (t tasks) createList(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error unmarshalling JSON: %s", err), http.StatusBadRequest)
 		return
 	}
-	if err := t.service.CreateList(context.Background(), &list); err != nil {
+	if err := h.services.CreateList(context.Background(), &list); err != nil {
 		http.Error(w, fmt.Sprintf("error adding data to db: %s", err), http.StatusBadRequest)
 		return
 	}
 }
 
-func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
+func (h handler) getListsByUId(w http.ResponseWriter, r *http.Request) {
 	sUId := r.URL.Query().Get("UId")
 	defer func() { _ = r.Body.Close() }()
 
@@ -32,9 +32,9 @@ func (t tasks) getListsByUId(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "No user with such id! Provide it via url parameter 'UId'", http.StatusBadRequest)
 		return
 	}
-	if lists, err := t.service.GetListsByUId(context.TODO(), UId); err == nil {
+	if lists, err := h.services.GetListsByUId(context.TODO(), int64(UId)); err == nil {
 		if lists == nil {
-			http.Error(w, "No user with such id!", http.StatusBadRequest)
+			http.Error(w, "No lists for user with such id!", http.StatusBadRequest)
 			return
 		}
 		for i, list := range lists {
