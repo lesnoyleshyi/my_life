@@ -13,6 +13,7 @@ func (h *handler) signUp(w http.ResponseWriter, r *http.Request) {
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		fmt.Fprintf(w, "error inmarshalling json: %v", err)
+		return
 	}
 
 	userId, err := h.services.CreateUser(context.TODO(), &user)
