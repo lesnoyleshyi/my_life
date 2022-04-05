@@ -51,6 +51,7 @@ func (a authPostgres) GetUser(ctx context.Context, username string, password str
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
+	fmt.Println("DEBUG INFO:", username, password)
 	row := a.pool.QueryRow(ctx, getUserQuery, username, password)
 	if err := row.Scan(&u.UId, &u.Name, &u.Phone, &u.Email, &u.Password, &u.RelevanceTime); err != nil {
 		return nil, fmt.Errorf("error retreiveing data from database: %w", err)
