@@ -51,7 +51,7 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 		},
 		int64(user.UId),
 	})
-	return token.SignedString(tokenSignature)
+	return token.SignedString([]byte(tokenSignature))
 }
 
 func (s AuthService) GetUser(ctx context.Context, username, password string) (*domain.User, error) {
