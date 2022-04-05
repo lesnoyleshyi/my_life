@@ -9,7 +9,7 @@ import (
 )
 
 type usernamePasswd struct {
-	Name   string `json:"name,"`
+	Name   string `json:"name"`
 	Passwd string `json:"password"`
 }
 
