@@ -1,11 +1,13 @@
 package services
 
 import (
+	"context"
 	"my_life/internal/repository"
 )
 
 type Authorisation interface {
 	repository.Authorisation
+	GenerateToken(ctx context.Context, username, password string) (string, error)
 }
 
 type TaskList interface {
