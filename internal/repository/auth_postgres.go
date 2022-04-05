@@ -27,7 +27,7 @@ func (a authPostgres) CreateUser(ctx context.Context, u *domain.User) (int, erro
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	row := a.pool.QueryRow(ctx, createUserQuery, u.Name, u.Password, u.Email, u.Password, u.RelevanceTime)
+	row := a.pool.QueryRow(ctx, createUserQuery, u.Name, u.Phone, u.Email, u.Password, u.RelevanceTime)
 	if err := row.Scan(&userId); err != nil {
 		return 0, fmt.Errorf("error adding data to database: %w", err)
 	}
