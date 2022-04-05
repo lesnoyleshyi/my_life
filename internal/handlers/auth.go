@@ -51,7 +51,7 @@ func (h *handler) signIn(w http.ResponseWriter, r *http.Request) {
 
 	token, err := h.services.GenerateToken(context.TODO(), user.Name, user.Passwd)
 	if err != nil {
-		fmt.Fprintf(w, "error receiveing user from database: %v", err)
+		fmt.Fprintf(w, "error generating token: %v", err)
 		return
 	}
 

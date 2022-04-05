@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 	"my_life/internal/domain"
@@ -40,7 +41,7 @@ func (s AuthService) CreateUser(ctx context.Context, user *domain.User) (int, er
 func (s AuthService) GenerateToken(ctx context.Context, username, password string) (string, error) {
 	user, err := s.repo.GetUser(ctx, username, password)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error receiving data from database: %v", err)
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimWithUId{
