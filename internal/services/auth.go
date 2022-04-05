@@ -38,19 +38,14 @@ func (s AuthService) CreateUser(ctx context.Context, user *domain.User) (int, er
 }
 
 func (s AuthService) GenerateToken(ctx context.Context, username, password string) (string, error) {
-	passwdHash, err := generatePasswdHash(password)
-	if err != nil {
-		return "", err
-	}
-
-	user, err := s.repo.GetUser(ctx, username, passwdHash)
+	user, err := s.repo.GetUser(ctx, username, password)
 	if err != nil {
 		return "", err
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimWithUId{
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 12).Unix(),
+			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		int64(user.UId),

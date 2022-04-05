@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"golang.org/x/crypto/bcrypt"
 	"my_life/internal/domain"
 )
 
@@ -40,9 +41,9 @@ func (a authPostgres) CreateUser(ctx context.Context, u *domain.User) (int, erro
 }
 
 const getUserQuery = `SELECT id, username, phone, email, passwdHash, relevanceTime
-								FROM users WHERE username = $1 AND passwdHash = $2;`
+								FROM users WHERE username = $1;`
 
-func (a authPostgres) GetUser(ctx context.Context, username string, password string) (*domain.User, error) {
+func (a authPostgres) GetUser(ctx context.Context, username, password string) (*domain.User, error) {
 	var u domain.User
 
 	tx, err := a.pool.Begin(ctx)
@@ -51,14 +52,17 @@ func (a authPostgres) GetUser(ctx context.Context, username string, password str
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	fmt.Println("DEBUG INFO:", username, password)
-	row := a.pool.QueryRow(ctx, getUserQuery, username, password)
+	row := a.pool.QueryRow(ctx, getUserQuery, username)
 	if err := row.Scan(&u.UId, &u.Name, &u.Phone, &u.Email, &u.Password, &u.RelevanceTime); err != nil {
 		return nil, fmt.Errorf("error retreiveing data from database: %w", err)
 	}
 
 	if err := tx.Commit(ctx); err != nil {
 		return nil, fmt.Errorf("error commiting transaction: %w", err)
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password)); err != nil {
+		return nil, fmt.Errorf("wrong username or password")
 	}
 
 	return &u, nil
