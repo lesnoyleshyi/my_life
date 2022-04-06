@@ -97,10 +97,7 @@ func retrieveToken(req *http.Request) (string, error) {
 }
 
 func getUIdFromToken(token string) (int, error) {
-
-	fmt.Println("DEBUG:", token)
-
-	tokenStruct, err := jwt.ParseWithClaims(token, &claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
+	tokenStruct, err := jwt.ParseWithClaims(token, claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
 		if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
