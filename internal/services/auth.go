@@ -9,6 +9,7 @@ import (
 	"my_life/internal/domain"
 	"my_life/internal/repository"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -24,7 +25,7 @@ type AuthService struct {
 
 type claimWithUId struct {
 	jwt.RegisteredClaims
-	UId int64 `json:"UId"`
+	UId int `json:"UId"`
 }
 
 func NewAuthService(repo repository.Repository) *AuthService {
@@ -51,8 +52,9 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 		jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{time.Now().Add(tokenTTL)},
 			IssuedAt:  &jwt.NumericDate{time.Now()},
+			Subject:   strconv.Itoa(user.UId),
 		},
-		int64(user.UId),
+		user.UId,
 	})
 	return token.SignedString([]byte(tokenSignature))
 }
@@ -92,14 +94,14 @@ func retrieveToken(req *http.Request) (string, error) {
 	return authValsArr[1], nil
 }
 
-func getUIdFromToken(token string) (int64, error) {
+func getUIdFromToken(token string) (int, error) {
 	tokenStruct, err := jwt.ParseWithClaims(token, claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
 		if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
 		return []byte(tokenSignature), nil
 	})
-	if err != nil {
+	if err != nil || tokenStruct.Valid == false {
 		return 0, fmt.Errorf("ParseWithClaims goes wrong: %w", err)
 	}
 	claims, ok := tokenStruct.Claims.(*claimWithUId)
