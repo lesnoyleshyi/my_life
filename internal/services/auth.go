@@ -24,7 +24,7 @@ type AuthService struct {
 }
 
 type claimWithUId struct {
-	UId string `json:"UId"`
+	UId int `json:"UId"`
 	jwt.RegisteredClaims
 }
 
@@ -49,7 +49,7 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 	}
 
 	claims := claimWithUId{
-		strconv.Itoa(user.UId),
+		user.UId,
 		jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{time.Now().Add(tokenTTL)},
 			IssuedAt:  &jwt.NumericDate{time.Now()},
@@ -97,7 +97,7 @@ func retrieveToken(req *http.Request) (string, error) {
 }
 
 func getUIdFromToken(token string) (int, error) {
-	tokenStruct, err := jwt.ParseWithClaims(token, claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
+	tokenStruct, err := jwt.ParseWithClaims(token, &claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
 		if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
@@ -111,12 +111,9 @@ func getUIdFromToken(token string) (int, error) {
 		return 0, errors.New("token claims are not of type *claimWithUId")
 	}
 
-	UId, err := strconv.Atoi(claims.UId)
-	if err != nil {
-		return 0, fmt.Errorf("atoi goes wrong: %w", err)
-	}
+	fmt.Println("DEBUG:", claims.UId, claims.Subject)
 
-	return UId, err
+	return claims.UId, err
 }
 
 func generatePasswdHash(password string) (string, error) {
