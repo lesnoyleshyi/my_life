@@ -24,8 +24,8 @@ type AuthService struct {
 }
 
 type claimWithUId struct {
-	jwt.RegisteredClaims
 	UId string `json:"UId"`
+	jwt.RegisteredClaims
 }
 
 func NewAuthService(repo repository.Repository) *AuthService {
@@ -48,14 +48,16 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 		return "", fmt.Errorf("error receiving data from database: %v", err)
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimWithUId{
+	claims := claimWithUId{
+		strconv.Itoa(user.UId),
 		jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{time.Now().Add(tokenTTL)},
 			IssuedAt:  &jwt.NumericDate{time.Now()},
 			Subject:   strconv.Itoa(user.UId),
 		},
-		strconv.Itoa(user.UId),
-	})
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(tokenSignature))
 }
 
@@ -95,7 +97,10 @@ func retrieveToken(req *http.Request) (string, error) {
 }
 
 func getUIdFromToken(token string) (int, error) {
-	tokenStruct, err := jwt.ParseWithClaims(token, claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
+
+	fmt.Println("DEBUG:", token)
+
+	tokenStruct, err := jwt.ParseWithClaims(token, &claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
 		if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
 		}
