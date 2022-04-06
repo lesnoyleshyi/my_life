@@ -21,7 +21,7 @@ func (h *handler) Routes() chi.Router {
 		r.Post("/sign-in", h.signIn)
 	})
 
-	r.Route("/lists", func(r chi.Router) {
+	r.With(h.verifyToken).Route("/lists", func(r chi.Router) {
 		r.Post("/", h.createList)
 		r.Get("/", h.getListsByUId)
 	})

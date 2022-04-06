@@ -58,3 +58,7 @@ func (h *handler) signIn(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(token))
 }
+
+func (h *handler) verifyToken(next http.Handler) http.Handler {
+	return h.services.VerifyToken(next)
+}

@@ -2,11 +2,14 @@ package services
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"my_life/internal/domain"
 	"my_life/internal/repository"
+	"net/http"
+	"strings"
 	"time"
 )
 
@@ -20,7 +23,7 @@ type AuthService struct {
 }
 
 type claimWithUId struct {
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 	UId int64 `json:"UId"`
 }
 
@@ -45,13 +48,73 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimWithUId{
-		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
-			IssuedAt:  time.Now().Unix(),
+		jwt.RegisteredClaims{
+			ExpiresAt: &jwt.NumericDate{time.Now().Add(tokenTTL)},
+			IssuedAt:  &jwt.NumericDate{time.Now()},
 		},
 		int64(user.UId),
 	})
 	return token.SignedString([]byte(tokenSignature))
+}
+
+func (s AuthService) VerifyToken(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token, err := retrieveToken(r)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(fmt.Sprint(err)))
+			return
+		}
+		UId, err := getUIdFromToken(token)
+		if err != nil {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(fmt.Sprint(err)))
+			return
+		}
+		ctx := context.WithValue(r.Context(), "UId", UId)
+		r = r.WithContext(ctx)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func retrieveToken(req *http.Request) (string, error) {
+	authHeaderContent := req.Header.Values("Authorization")
+	if len(authHeaderContent) == 0 {
+		return "", fmt.Errorf("no authorisation header is in request")
+	}
+	authValsArr := strings.Split(authHeaderContent[0], " ")
+	if len(authValsArr) != 2 || authValsArr[0] != "Bearer" {
+		return "", fmt.Errorf("wrong authorisation header")
+	}
+	if authValsArr[1] == "" {
+		return "", fmt.Errorf("empty token")
+	}
+	return authValsArr[1], nil
+}
+
+func getUIdFromToken(token string) (int64, error) {
+	tokenStruct, err := jwt.ParseWithClaims(token, claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
+		if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signing method")
+		}
+		return []byte(tokenSignature), nil
+	})
+	if err != nil {
+		return 0, err
+	}
+	claims, ok := tokenStruct.Claims.(*claimWithUId)
+	if !ok {
+		return 0, errors.New("token claims are not of type *claimWithUId")
+	}
+	return claims.UId, err
+}
+
+func generatePasswdHash(password string) (string, error) {
+	if byteHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost); err != nil {
+		return "", err
+	} else {
+		return string(byteHash), nil
+	}
 }
 
 func (s AuthService) GetUser(ctx context.Context, username, password string) (*domain.User, error) {
@@ -61,12 +124,4 @@ func (s AuthService) GetUser(ctx context.Context, username, password string) (*d
 	}
 
 	return s.repo.GetUser(ctx, username, passwdHash)
-}
-
-func generatePasswdHash(password string) (string, error) {
-	if byteHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost); err != nil {
-		return "", err
-	} else {
-		return string(byteHash), nil
-	}
 }
