@@ -100,7 +100,7 @@ func getUIdFromToken(token string) (int64, error) {
 		return []byte(tokenSignature), nil
 	})
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("ParseWithClaims goes wrong: %w", err)
 	}
 	claims, ok := tokenStruct.Claims.(*claimWithUId)
 	if !ok {
