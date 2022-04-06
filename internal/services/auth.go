@@ -25,7 +25,7 @@ type AuthService struct {
 
 type claimWithUId struct {
 	jwt.RegisteredClaims
-	UId int `json:"UId"`
+	UId string `json:"UId"`
 }
 
 func NewAuthService(repo repository.Repository) *AuthService {
@@ -54,7 +54,7 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 			IssuedAt:  &jwt.NumericDate{time.Now()},
 			Subject:   strconv.Itoa(user.UId),
 		},
-		user.UId,
+		strconv.Itoa(user.UId),
 	})
 	return token.SignedString([]byte(tokenSignature))
 }
@@ -108,7 +108,13 @@ func getUIdFromToken(token string) (int, error) {
 	if !ok {
 		return 0, errors.New("token claims are not of type *claimWithUId")
 	}
-	return claims.UId, err
+
+	UId, err := strconv.Atoi(claims.UId)
+	if err != nil {
+		return 0, fmt.Errorf("atoi goes wrong: %w", err)
+	}
+
+	return UId, err
 }
 
 func generatePasswdHash(password string) (string, error) {
