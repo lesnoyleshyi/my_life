@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"my_life/internal/domain"
 	"net/http"
-	"strconv"
 )
 
 func (h handler) createList(w http.ResponseWriter, r *http.Request) {
@@ -24,12 +23,10 @@ func (h handler) createList(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h handler) getListsByUId(w http.ResponseWriter, r *http.Request) {
-	sUId := r.URL.Query().Get("UId")
-	defer func() { _ = r.Body.Close() }()
 
-	UId, err := strconv.Atoi(sUId)
-	if sUId == "" || err != nil {
-		http.Error(w, "No user with such id! Provide it via url parameter 'UId'", http.StatusBadRequest)
+	UId, ok := r.Context().Value("UId").(int)
+	if !ok {
+		http.Error(w, "something went wrong when parsing user id", http.StatusBadRequest)
 		return
 	}
 	if lists, err := h.services.GetListsByUId(context.TODO(), int64(UId)); err == nil {

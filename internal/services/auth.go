@@ -23,6 +23,9 @@ type AuthService struct {
 	repo repository.Authorisation
 }
 
+// this struct is used UId with string type as
+// storing it with int type causes an Unmarshaller error
+// "json: cannot unmarshal string into Go struct field claimWithUId.UId of type int"
 type claimWithUId struct {
 	UId string `json:"UId"`
 	jwt.RegisteredClaims
