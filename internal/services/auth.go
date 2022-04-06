@@ -24,7 +24,7 @@ type AuthService struct {
 }
 
 type claimWithUId struct {
-	UId int `json:"UId"`
+	UId string `json:"UId"`
 	jwt.RegisteredClaims
 }
 
@@ -49,7 +49,7 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 	}
 
 	claims := claimWithUId{
-		user.UId,
+		strconv.Itoa(user.UId),
 		jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{time.Now().Add(tokenTTL)},
 			IssuedAt:  &jwt.NumericDate{time.Now()},
@@ -113,7 +113,11 @@ func getUIdFromToken(token string) (int, error) {
 
 	fmt.Println("DEBUG:", claims.UId, claims.Subject)
 
-	return claims.UId, err
+	UId, err := strconv.Atoi(claims.UId)
+	if err != nil {
+		return 0, fmt.Errorf("atoi goes wrong: %w", err)
+	}
+	return UId, err
 }
 
 func generatePasswdHash(password string) (string, error) {
