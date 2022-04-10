@@ -36,7 +36,7 @@ func main() {
 	handler := handlers.NewHandler(service)
 	r := chi.NewRouter()
 
-	r.Mount("/swagger/*", httpSwagger.WrapHandler)
+	r.Mount("/swagger", httpSwagger.WrapHandler)
 	r.Mount("/", handler.Routes())
 
 	log.Fatal(http.ListenAndServe("api:8080", r))
