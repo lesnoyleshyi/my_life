@@ -19,7 +19,7 @@ const connstr = "postgres://go_user:8246go@postgres_my_life:5432/taskstore"
 // @version			0.1
 // @description		It's made for testing purposes only
 
-// @host			localhost:8080
+// @host			132.226.200.167:8080
 // @BasePAth		/
 
 func main() {
