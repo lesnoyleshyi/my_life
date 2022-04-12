@@ -7,11 +7,15 @@ import (
 )
 
 type handler struct {
-	services *services.Service
+	services       *services.Service
+	sectionHandler sectionHandler
 }
 
 func NewHandler(service *services.Service) *handler {
-	return &handler{service}
+	return &handler{
+		services:       service,
+		sectionHandler: *newSectionHandler(service),
+	}
 }
 
 func (h *handler) Routes() chi.Router {
@@ -30,6 +34,21 @@ func (h *handler) Routes() chi.Router {
 		r.Post("/", h.createList)
 		r.Get("/", h.getListsByUId)
 	})
+
+	r.With(h.verifyToken).Route("/sections", func(r chi.Router) {
+		r.Post("/", h.sectionHandler.createSection)
+		r.Get("/", h.sectionHandler.getSectionsByUId)
+	})
+
+	//r.With(h.verifyToken).Route("/", func(r chi.Router) {
+	//	r.Post("/", h.createTask)
+	//	r.Get("/", h.getTasksByUId)
+	//})
+	//
+	//r.With(h.verifyToken).Route("/", func(r chi.Router) {
+	//	r.Post("/", h.createSubtask)
+	//	r.Get("/", h.getSubTasksByUId)
+	//})
 
 	r.Route("/users", func(r chi.Router) {
 		r.Get("/", h.getUserById)
