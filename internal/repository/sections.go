@@ -61,11 +61,12 @@ func (r sectionsRepo) GetSectionsByUId(ctx context.Context, UId int32) ([]domain
 
 	rows, err := tx.Query(ctx, getSectionsQuery, UId)
 	for rows.Next() {
-		var row domain.TaskSection
-		if err := rows.Scan(&row); err != nil {
+		var r domain.TaskSection
+		err := rows.Scan(&r.Id, &r.UId, &r.ListId, &r.Title, &r.Order, &r.RelevanceTime)
+		if err != nil {
 			log.Println(err)
 		}
-		sections = append(sections, row)
+		sections = append(sections, r)
 	}
 	if rows.Err() != nil {
 		return nil, fmt.Errorf("error scanning rows from db to struct")
