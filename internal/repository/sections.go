@@ -48,7 +48,7 @@ func (r sectionsRepo) CreateSection(ctx context.Context, s *domain.TaskSection) 
 }
 
 const getSectionsQuery = `SELECT id, UId, listId, title, order_, relevanceTime
-							FROM sections WHERE UId = $1;'`
+							FROM sections WHERE UId = $1;`
 
 func (r sectionsRepo) GetSectionsByUId(ctx context.Context, UId int32) ([]domain.TaskSection, error) {
 	var sections []domain.TaskSection
