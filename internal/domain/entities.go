@@ -3,7 +3,7 @@ package domain
 import "time"
 
 type User struct {
-	UId           int       `json:"id"`
+	UId           int32     `json:"id"`
 	Name          string    `json:"name"`
 	Phone         string    `json:"phone"`
 	Email         string    `json:"email"`
@@ -12,8 +12,8 @@ type User struct {
 }
 
 type TaskList struct {
-	Id            uint64    `json:"id"`
-	UId           uint64    `json:"uId"`
+	Id            int32     `json:"id"`
+	UId           int32     `json:"uId"`
 	Emoji         string    `json:"emoji"`
 	Title         string    `json:"title"`
 	Order         uint8     `json:"order"`
@@ -21,19 +21,19 @@ type TaskList struct {
 }
 
 type TaskSection struct {
-	Id            uint64    `json:"id"`
-	UId           uint64    `json:"uId"`
-	ListId        uint64    `json:"listId"`
+	Id            int32     `json:"id"`
+	UId           int32     `json:"uId"`
+	ListId        int32     `json:"listId"`
 	Title         string    `json:"title"`
 	Order         uint8     `json:"order_"`
 	RelevanceTime time.Time `json:"relevanceTime"`
 }
 
 type Task struct {
-	Id            uint64    `json:"id"`
-	UId           uint64    `json:"iId"`
-	ListId        uint64    `json:"listId"`
-	SectionId     uint64    `json:"sectionId"`
+	Id            int32     `json:"id"`
+	UId           int32     `json:"iId"`
+	ListId        int32     `json:"listId"`
+	SectionId     int32     `json:"sectionId"`
 	Title         string    `json:"title"`
 	IsCompleted   bool      `json:"isCompleted"`
 	CompletedDays string    `json:"completedDays"`
@@ -50,11 +50,11 @@ type Task struct {
 }
 
 type Subtask struct {
-	Id            uint64    `json:"id"`
-	UId           uint64    `json:"iId"`
-	ListId        uint64    `json:"listId"`
-	SectionId     uint64    `json:"sectionId"`
-	TaskId        uint64    `json:"taskId"`
+	Id            int32     `json:"id"`
+	UId           int32     `json:"iId"`
+	ListId        int32     `json:"listId"`
+	SectionId     int32     `json:"sectionId"`
+	TaskId        int32     `json:"taskId"`
 	Title         string    `json:"title"`
 	IsCompleted   bool      `json:"isCompleted"`
 	Order         uint8     `json:"order_"`

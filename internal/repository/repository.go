@@ -13,11 +13,11 @@ type Authorisation interface {
 
 type TaskList interface {
 	CreateList(ctx context.Context, l *domain.TaskList) error
-	GetListsByUId(ctx context.Context, UId int64) ([]domain.TaskList, error)
+	GetListsByUId(ctx context.Context, UId int32) ([]domain.TaskList, error)
 }
 
 type User interface {
-	GetUserById(ctx context.Context, UId int64) (*domain.User, error)
+	GetUserById(ctx context.Context, UId int32) (*domain.User, error)
 }
 
 type Repository struct {

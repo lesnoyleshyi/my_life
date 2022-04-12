@@ -103,7 +103,7 @@ func retrieveToken(req *http.Request) (string, error) {
 	return authValsArr[1], nil
 }
 
-func getUIdFromToken(token string) (int, error) {
+func getUIdFromToken(token string) (int32, error) {
 	tokenStruct, err := jwt.ParseWithClaims(token, &claimWithUId{}, func(tkn *jwt.Token) (interface{}, error) {
 		if _, ok := tkn.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
@@ -124,7 +124,7 @@ func getUIdFromToken(token string) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("atoi goes wrong: %w", err)
 	}
-	return UId, err
+	return int32(UId), err
 }
 
 func generatePasswdHash(password string) (string, error) {

@@ -24,7 +24,7 @@ func (h handler) createList(w http.ResponseWriter, r *http.Request) {
 
 func (h handler) getListsByUId(w http.ResponseWriter, r *http.Request) {
 
-	UId, ok := r.Context().Value("UId").(int64)
+	UId, ok := r.Context().Value("UId").(int32)
 	if !ok {
 		http.Error(w, "something went wrong when parsing user id", http.StatusBadRequest)
 		return

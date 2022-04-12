@@ -26,7 +26,7 @@ var TxOpts = pgx.TxOptions{
 const getUserIdQuery = `SELECT id FROM users WHERE id=$1`
 
 // GetUserById uses transaction only for educational purposes
-func (u *userRepo) GetUserById(ctx context.Context, UId int64) (*domain.User, error) {
+func (u *userRepo) GetUserById(ctx context.Context, UId int32) (*domain.User, error) {
 	tx, err := u.pool.BeginTx(ctx, TxOpts)
 	if err != nil {
 		return nil, fmt.Errorf("unable brgin transaction: %w", err)

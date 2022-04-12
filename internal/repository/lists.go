@@ -41,7 +41,7 @@ func (r *listRepo) CreateList(ctx context.Context, tl *domain.TaskList) error {
 
 const selectByUId = `SELECT id, UId, emoji, title, order_, relevanceTime FROM lists WHERE UId=$1;`
 
-func (r *listRepo) GetListsByUId(ctx context.Context, UId int64) ([]domain.TaskList, error) {
+func (r *listRepo) GetListsByUId(ctx context.Context, UId int32) ([]domain.TaskList, error) {
 	rows, err := r.pool.Query(ctx, selectByUId, UId)
 	if err != nil {
 		return nil, fmt.Errorf("error retrieving data from database, %w", err)

@@ -18,6 +18,6 @@ func (s ListService) CreateList(ctx context.Context, list *domain.TaskList) erro
 	return s.repo.CreateList(ctx, list)
 }
 
-func (s ListService) GetListsByUId(ctx context.Context, UId int64) ([]domain.TaskList, error) {
+func (s ListService) GetListsByUId(ctx context.Context, UId int32) ([]domain.TaskList, error) {
 	return s.repo.GetListsByUId(ctx, UId)
 }

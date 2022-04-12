@@ -21,7 +21,7 @@ func (h handler) getUserById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.services.GetUserById(context.TODO(), int64(Uid))
+	user, err := h.services.GetUserById(context.TODO(), int32(Uid))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error recieving user by this UId: %s", err), http.StatusInternalServerError)
 		return
