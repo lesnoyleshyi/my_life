@@ -56,11 +56,11 @@ func (s AuthService) GenerateToken(ctx context.Context, username, password strin
 	}
 
 	claims := claimWithUId{
-		strconv.Itoa(user.UId),
+		strconv.Itoa(int(user.UId)),
 		jwt.RegisteredClaims{
 			ExpiresAt: &jwt.NumericDate{time.Now().Add(tokenTTL)},
 			IssuedAt:  &jwt.NumericDate{time.Now()},
-			Subject:   strconv.Itoa(user.UId),
+			Subject:   strconv.Itoa(int(user.UId)),
 		},
 	}
 
