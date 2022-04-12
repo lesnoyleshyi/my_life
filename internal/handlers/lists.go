@@ -24,12 +24,12 @@ func (h handler) createList(w http.ResponseWriter, r *http.Request) {
 
 func (h handler) getListsByUId(w http.ResponseWriter, r *http.Request) {
 
-	UId, ok := r.Context().Value("UId").(int)
+	UId, ok := r.Context().Value("UId").(int64)
 	if !ok {
 		http.Error(w, "something went wrong when parsing user id", http.StatusBadRequest)
 		return
 	}
-	if lists, err := h.services.GetListsByUId(context.TODO(), int64(UId)); err == nil {
+	if lists, err := h.services.GetListsByUId(r.Context(), UId); err == nil {
 		if lists == nil {
 			http.Error(w, "No lists for user with such id!", http.StatusBadRequest)
 			return

@@ -16,7 +16,7 @@ func NewAuthPostgres(pool *pgxpool.Pool) *authPostgres {
 	return &authPostgres{pool: pool}
 }
 
-const createUserQuery = `INSERT INTO users (username, phone, email, passwdHash, relevanceTime)
+const createUserQuery = `INSERT INTO users (username, phone, email, passwdHash)
 													Values ($1, $2, $3, $4, $5) RETURNING id;`
 
 func (a authPostgres) CreateUser(ctx context.Context, u *domain.User) (int, error) {
@@ -28,7 +28,7 @@ func (a authPostgres) CreateUser(ctx context.Context, u *domain.User) (int, erro
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	row := a.pool.QueryRow(ctx, createUserQuery, u.Name, u.Phone, u.Email, u.Password, u.RelevanceTime)
+	row := a.pool.QueryRow(ctx, createUserQuery, u.Name, u.Phone, u.Email, u.Password)
 	if err := row.Scan(&userId); err != nil {
 		return 0, fmt.Errorf("error adding data to database: %w", err)
 	}

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/go-chi/chi/v5"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"my_life/internal/services"
 )
 
@@ -15,6 +16,10 @@ func NewHandler(service *services.Service) *handler {
 
 func (h *handler) Routes() chi.Router {
 	r := chi.NewRouter()
+
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
+	))
 
 	r.Route("/", func(r chi.Router) {
 		r.Post("/sign-up", h.signUp)

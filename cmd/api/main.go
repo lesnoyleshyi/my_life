@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
-	httpSwagger "github.com/swaggo/http-swagger"
 	"log"
 	"my_life/internal/handlers"
 	"net/http"
@@ -35,11 +34,6 @@ func main() {
 
 	handler := handlers.NewHandler(service)
 	r := chi.NewRouter()
-
-	//r.Mount("/swagger", httpSwagger.WrapHandler)
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
-	))
 	r.Mount("/", handler.Routes())
 
 	log.Fatal(http.ListenAndServe("api:8080", r))
