@@ -40,5 +40,28 @@ func (h sectionHandler) createSection(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h sectionHandler) getSectionsByUId(w http.ResponseWriter, r *http.Request) {
+	UId, ok := r.Context().Value("UId").(int32)
+	if !ok {
+		http.Error(w, fmt.Sprintf("can't retreive user id from context"), http.StatusBadRequest)
+	}
 
+	sections, err := h.services.GetSectionsByUId(r.Context(), UId)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("can't retreive sections from db: %s", err), http.StatusBadRequest)
+	}
+	for _, section := range sections {
+		sectionJSON, err := json.Marshal(section)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("can't marshall struct to JSON: %s", err), http.StatusInternalServerError)
+			return
+		}
+		if _, err := w.Write(sectionJSON); err != nil {
+			http.Error(w, fmt.Sprintf("can't write JSON to response body: %s", err), http.StatusInternalServerError)
+			return
+		}
+		if _, err := w.Write([]byte("\n")); err != nil {
+			http.Error(w, fmt.Sprintf("can't write \\n JSON to response body: %s", err), http.StatusInternalServerError)
+			return
+		}
+	}
 }

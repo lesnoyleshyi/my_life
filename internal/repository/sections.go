@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"log"
 	"my_life/internal/domain"
 )
 
@@ -18,7 +19,7 @@ func newSectionsRepo(pool *pgxpool.Pool) *sectionsRepo {
 }
 
 const createSectionQuery string = `INSERT INTO sections (UId, listId, title, order_)
-									VALUES ($1, $2, $3, $4);`
+															VALUES ($1, $2, $3, $4);`
 
 func (r sectionsRepo) CreateSection(ctx context.Context, s *domain.TaskSection) error {
 	UId, ok := ctx.Value("UId").(int32)
@@ -46,6 +47,32 @@ func (r sectionsRepo) CreateSection(ctx context.Context, s *domain.TaskSection) 
 	return nil
 }
 
+const getSectionsQuery = `SELECT id, UId, listId, title, order_, relevanceTime
+							FROM sections WHERE UId = $1;'`
+
 func (r sectionsRepo) GetSectionsByUId(ctx context.Context, UId int32) ([]domain.TaskSection, error) {
-	return nil, nil
+	var sections []domain.TaskSection
+
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error initialising transaction: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	rows, err := tx.Query(ctx, getSectionsQuery, UId)
+	for rows.Next() {
+		var row domain.TaskSection
+		if err := rows.Scan(&row); err != nil {
+			log.Println(err)
+		}
+		sections = append(sections, row)
+	}
+	if rows.Err() != nil {
+		return nil, fmt.Errorf("error scanning rows from db to struct")
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("error commiting transaction: %w", err)
+	}
+	return sections, nil
 }
