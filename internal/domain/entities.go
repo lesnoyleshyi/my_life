@@ -25,7 +25,7 @@ type TaskSection struct {
 	UId           int32     `json:"uId"`
 	ListId        int32     `json:"listId"`
 	Title         string    `json:"title"`
-	Order         uint8     `json:"order_"`
+	Order         uint8     `json:"order"`
 	RelevanceTime time.Time `json:"relevanceTime"`
 }
 
@@ -38,7 +38,7 @@ type Task struct {
 	IsCompleted   bool      `json:"isCompleted"`
 	CompletedDays string    `json:"completedDays"`
 	Note          string    `json:"note"`
-	Order         uint8     `json:"order_"`
+	Order         uint8     `json:"order"`
 	RepeatType    string    `json:"repeatType"`
 	DaysOfWeek    string    `json:"daysOfWeek"`
 	DaysOfMonth   string    `json:"daysOfMonth"`
@@ -57,6 +57,6 @@ type Subtask struct {
 	TaskId        int32     `json:"taskId"`
 	Title         string    `json:"title"`
 	IsCompleted   bool      `json:"isCompleted"`
-	Order         uint8     `json:"order_"`
+	Order         uint8     `json:"order"`
 	RelevanceTime time.Time `json:"relevanceTime"`
 }
