@@ -42,7 +42,7 @@ func (h *handler) Routes() chi.Router {
 		r.Get("/", h.sectionHandler.getSectionsByUId)
 	})
 
-	r.With(h.verifyToken).Route("/", func(r chi.Router) {
+	r.With(h.verifyToken).Route("/tasks", func(r chi.Router) {
 		r.Post("/", h.taskHandler.createTask)
 		r.Get("/", h.taskHandler.getTasksByUId)
 	})
