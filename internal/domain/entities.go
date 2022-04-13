@@ -31,7 +31,7 @@ type TaskSection struct {
 
 type Task struct {
 	Id            int32     `json:"id"`
-	UId           int32     `json:"iId"`
+	UId           int32     `json:"uId"`
 	ListId        int32     `json:"listId"`
 	SectionId     int32     `json:"sectionId"`
 	Title         string    `json:"title"`
