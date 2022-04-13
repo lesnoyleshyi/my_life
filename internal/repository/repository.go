@@ -25,10 +25,16 @@ type User interface {
 	GetUserById(ctx context.Context, UId int32) (*domain.User, error)
 }
 
+type Tasker interface {
+	CreateTask(ctx context.Context, t *domain.Task) error
+	GetTasksByUId(ctx context.Context, UId int32) ([]domain.Task, error)
+}
+
 type Repository struct {
 	Authorisation
 	TaskList
 	TaskSection
+	Tasker
 	User
 }
 
@@ -37,6 +43,7 @@ func NewRepository(pgxPool *pgxpool.Pool) *Repository {
 		Authorisation: NewAuthPostgres(pgxPool),
 		TaskList:      NewListRepo(pgxPool),
 		TaskSection:   newSectionsRepo(pgxPool),
+		Tasker:        newTaskRepo(pgxPool),
 		User:          NewUserRepo(pgxPool),
 	}
 }

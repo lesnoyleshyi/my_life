@@ -24,10 +24,15 @@ type TaskSection interface {
 	repository.TaskSection
 }
 
+type Tasker interface {
+	repository.Tasker
+}
+
 type Service struct {
 	Authorisation
 	TaskList
 	TaskSection
+	Tasker
 	User
 }
 
@@ -36,6 +41,7 @@ func NewService(repo *repository.Repository) *Service {
 		Authorisation: NewAuthService(*repo),
 		TaskList:      NewListService(*repo),
 		TaskSection:   newSectionService(repo),
+		Tasker:        newTaskService(repo),
 		User:          NewUserService(*repo),
 	}
 }

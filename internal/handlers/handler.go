@@ -9,12 +9,14 @@ import (
 type handler struct {
 	services       *services.Service
 	sectionHandler sectionHandler
+	taskHandler    taskHandler
 }
 
 func NewHandler(service *services.Service) *handler {
 	return &handler{
 		services:       service,
 		sectionHandler: *newSectionHandler(service),
+		taskHandler:    *newTaskHandler(service),
 	}
 }
 
@@ -40,10 +42,10 @@ func (h *handler) Routes() chi.Router {
 		r.Get("/", h.sectionHandler.getSectionsByUId)
 	})
 
-	//r.With(h.verifyToken).Route("/", func(r chi.Router) {
-	//	r.Post("/", h.createTask)
-	//	r.Get("/", h.getTasksByUId)
-	//})
+	r.With(h.verifyToken).Route("/", func(r chi.Router) {
+		r.Post("/", h.taskHandler.createTask)
+		r.Get("/", h.taskHandler.getTasksByUId)
+	})
 	//
 	//r.With(h.verifyToken).Route("/", func(r chi.Router) {
 	//	r.Post("/", h.createSubtask)
