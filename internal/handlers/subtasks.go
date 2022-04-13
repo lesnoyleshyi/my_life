@@ -8,58 +8,56 @@ import (
 	"net/http"
 )
 
-type taskHandler struct {
+type subtaskHandler struct {
 	services *services.Service
 }
 
-func newTaskHandler(services *services.Service) *taskHandler {
-	return &taskHandler{
+func newSubtaskHandler(services *services.Service) *subtaskHandler {
+	return &subtaskHandler{
 		services: services,
 	}
 }
 
-func (h taskHandler) createTask(w http.ResponseWriter, r *http.Request) {
-	var task domain.Task
+func (h subtaskHandler) createSubtask(w http.ResponseWriter, r *http.Request) {
+	var subtask domain.Subtask
 
-	defer func() { _ = r.Body.Close() }()
-
-	if err := json.NewDecoder(r.Body).Decode(&task); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&subtask); err != nil {
 		http.Error(w, fmt.Sprintf("error unmarshalling json: %s", err), http.StatusBadRequest)
 		return
 	}
 
-	if err := h.services.CreateTask(r.Context(), &task); err != nil {
+	if err := h.services.CreateSubTask(r.Context(), &subtask); err != nil {
 		http.Error(w, fmt.Sprintf("error adding data to db: %s", err), http.StatusBadRequest)
 		return
 	}
 
 	UId, ok := r.Context().Value("UId").(int32)
 	if ok {
-		fmt.Fprintf(w, "New task for user with id=%d added\n", UId)
+		fmt.Fprintf(w, "New subtask for user with id=%d added\n", UId)
 	} else {
-		http.Error(w, fmt.Sprintf("can't get UId from request or convert it to int32"), http.StatusBadRequest)
+		http.Error(w, fmt.Sprintf("can't get UId from request or convert it int32"), http.StatusBadRequest)
 	}
 }
 
-func (h taskHandler) getTasksByUId(w http.ResponseWriter, r *http.Request) {
+func (h subtaskHandler) getSubTasksByUId(w http.ResponseWriter, r *http.Request) {
 	UId, ok := r.Context().Value("UId").(int32)
 	if !ok {
 		http.Error(w, fmt.Sprintf("can't retreive user id from context"), http.StatusBadRequest)
 		return
 	}
 
-	tasks, err := h.services.GetTasksByUId(r.Context(), UId)
+	subtasks, err := h.services.GetSubTasksByUId(r.Context(), UId)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("can't retreive tasks from db: %s", err), http.StatusBadRequest)
 		return
 	}
-	for _, task := range tasks {
-		taskJSON, err := json.Marshal(task)
+	for subtask := range subtasks {
+		subtaskJson, err := json.Marshal(subtask)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("can't marshall struct to JSON: %s", err), http.StatusInternalServerError)
 			return
 		}
-		if _, err := fmt.Fprintln(w, string(taskJSON)); err != nil {
+		if _, err := fmt.Fprintln(w, string(subtaskJson)); err != nil {
 			http.Error(w, fmt.Sprintf("can't write JSON to response body: %s", err), http.StatusInternalServerError)
 			return
 		}

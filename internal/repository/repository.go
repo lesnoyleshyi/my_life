@@ -30,11 +30,17 @@ type Tasker interface {
 	GetTasksByUId(ctx context.Context, UId int32) ([]domain.Task, error)
 }
 
+type SubTasker interface {
+	CreateSubTask(ctx context.Context, t *domain.Subtask) error
+	GetSubTasksByUId(ctx context.Context, UId int32) ([]domain.Subtask, error)
+}
+
 type Repository struct {
 	Authorisation
 	TaskList
 	TaskSection
 	Tasker
+	SubTasker
 	User
 }
 
@@ -44,6 +50,7 @@ func NewRepository(pgxPool *pgxpool.Pool) *Repository {
 		TaskList:      NewListRepo(pgxPool),
 		TaskSection:   newSectionsRepo(pgxPool),
 		Tasker:        newTaskRepo(pgxPool),
+		SubTasker:     newSubtaskRepo(pgxPool),
 		User:          NewUserRepo(pgxPool),
 	}
 }
