@@ -51,7 +51,7 @@ func (h subtaskHandler) getSubTasksByUId(w http.ResponseWriter, r *http.Request)
 		http.Error(w, fmt.Sprintf("can't retreive tasks from db: %s", err), http.StatusBadRequest)
 		return
 	}
-	for subtask := range subtasks {
+	for _, subtask := range subtasks {
 		subtaskJson, err := json.Marshal(subtask)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("can't marshall struct to JSON: %s", err), http.StatusInternalServerError)
