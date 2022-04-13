@@ -51,7 +51,7 @@ type Task struct {
 
 type Subtask struct {
 	Id            int32     `json:"id"`
-	UId           int32     `json:"iId"`
+	UId           int32     `json:"uId"`
 	ListId        int32     `json:"listId"`
 	SectionId     int32     `json:"sectionId"`
 	TaskId        int32     `json:"taskId"`
