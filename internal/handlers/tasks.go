@@ -58,10 +58,9 @@ func (h taskHandler) getTasksByUId(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, fmt.Sprintf("can't marshall struct to JSON: %s", err), http.StatusInternalServerError)
 			return
 		}
-		if _, err := fmt.Fprintln(w, taskJSON); err != nil {
+		if _, err := fmt.Fprintln(w, string(taskJSON)); err != nil {
 			http.Error(w, fmt.Sprintf("can't write JSON to response body: %s", err), http.StatusInternalServerError)
 			return
 		}
 	}
-
 }
