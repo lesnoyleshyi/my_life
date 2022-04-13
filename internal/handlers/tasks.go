@@ -42,5 +42,26 @@ func (h taskHandler) createTask(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h taskHandler) getTasksByUId(w http.ResponseWriter, r *http.Request) {
+	UId, ok := r.Context().Value("UId").(int32)
+	if !ok {
+		http.Error(w, fmt.Sprintf("can't retreive user id from context"), http.StatusBadRequest)
+		return
+	}
+
+	tasks, err := h.services.GetTasksByUId(r.Context(), UId)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("can't retreive tasks from db: %s", err), http.StatusBadRequest)
+	}
+	for _, task := range tasks {
+		taskJSON, err := json.Marshal(task)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("can't marshall struct to JSON: %s", err), http.StatusInternalServerError)
+			return
+		}
+		if _, err := fmt.Fprintln(w, taskJSON); err != nil {
+			http.Error(w, fmt.Sprintf("can't write JSON to response body: %s", err), http.StatusInternalServerError)
+			return
+		}
+	}
 
 }

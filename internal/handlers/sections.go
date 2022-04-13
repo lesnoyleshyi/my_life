@@ -43,6 +43,7 @@ func (h sectionHandler) getSectionsByUId(w http.ResponseWriter, r *http.Request)
 	UId, ok := r.Context().Value("UId").(int32)
 	if !ok {
 		http.Error(w, fmt.Sprintf("can't retreive user id from context"), http.StatusBadRequest)
+		return
 	}
 
 	sections, err := h.services.GetSectionsByUId(r.Context(), UId)

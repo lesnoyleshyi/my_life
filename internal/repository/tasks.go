@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"log"
 	"my_life/internal/domain"
 )
 
@@ -51,6 +52,41 @@ func (r tasksRepo) CreateTask(ctx context.Context, t *domain.Task) error {
 	return nil
 }
 
+const getListsByUId = `SELECT id, UId, listId, sectionId, title, isCompleted,
+								completedDays, note, order_, repeatType,
+								daysOfWeek, daysOfMonth, concreteDate,
+								dateStart, dateEnd, dateReminder, relevanceTime
+						FROM tasks WHERE UId = $1;`
+
 func (r tasksRepo) GetTasksByUId(ctx context.Context, UId int32) ([]domain.Task, error) {
-	return nil, nil
+	var tasks []domain.Task
+
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("error initialising transaction: %w", err)
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+
+	rows, err := tx.Query(ctx, getListsByUId, UId)
+	for rows.Next() {
+		var r domain.Task
+		err := rows.Scan(&r.Id, &r.UId, &r.ListId, &r.SectionId, &r.Title, &r.IsCompleted,
+			&r.CompletedDays, &r.Note, &r.Order, &r.RepeatType,
+			&r.DaysOfWeek, &r.DaysOfMonth, &r.ConcreteDate,
+			&r.DateStart, &r.DateEnd, &r.DateReminder, &r.RelevanceTime)
+		if err != nil {
+			log.Println(err)
+		} else {
+			tasks = append(tasks, r)
+		}
+	}
+	if rows.Err() != nil {
+		return nil, fmt.Errorf("error scanning rows from db to struct")
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, fmt.Errorf("error commiting transaction: %w", err)
+	}
+
+	return tasks, nil
 }
