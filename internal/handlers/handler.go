@@ -9,6 +9,7 @@ import (
 type handler struct {
 	authHandler    *authHandler
 	userHandler    *userHandler
+	listHandler    *listHandler
 	sectionHandler *sectionHandler
 	taskHandler    *taskHandler
 	subtaskHandler *subtaskHandler
@@ -18,6 +19,7 @@ func NewHandler(service *services.Service) *handler {
 	return &handler{
 		authHandler:    newAuthHandler(service),
 		userHandler:    newUserHandler(service),
+		listHandler:    newListHandler(service),
 		sectionHandler: newSectionHandler(service),
 		taskHandler:    newTaskHandler(service),
 		subtaskHandler: newSubtaskHandler(service),
@@ -37,8 +39,8 @@ func (h *handler) Routes() chi.Router {
 	})
 
 	r.With(h.authHandler.verifyToken).Route("/lists", func(r chi.Router) {
-		r.Post("/", h.createList)
-		r.Get("/", h.getListsByUId)
+		r.Post("/", h.listHandler.createList)
+		r.Get("/", h.listHandler.getListsByUId)
 	})
 
 	r.With(h.authHandler.verifyToken).Route("/sections", func(r chi.Router) {

@@ -5,10 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"my_life/internal/domain"
+	"my_life/internal/services"
 	"net/http"
 )
 
-func (h handler) createList(w http.ResponseWriter, r *http.Request) {
+type listHandler struct {
+	services *services.Service
+}
+
+func newListHandler(services *services.Service) *listHandler {
+	return &listHandler{
+		services: services,
+	}
+}
+
+func (h listHandler) createList(w http.ResponseWriter, r *http.Request) {
 	var list domain.TaskList
 
 	defer func() { _ = r.Body.Close() }()
@@ -22,7 +33,7 @@ func (h handler) createList(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h handler) getListsByUId(w http.ResponseWriter, r *http.Request) {
+func (h listHandler) getListsByUId(w http.ResponseWriter, r *http.Request) {
 
 	UId, ok := r.Context().Value("UId").(int32)
 	if !ok {
