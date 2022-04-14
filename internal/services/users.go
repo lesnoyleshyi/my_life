@@ -48,17 +48,19 @@ func trimIdsFromTasks(tasks []domain.Task, subtasks []domain.Subtask) []domain.R
 		replTask.DateStart = task.DateStart
 		replTask.DateEnd = task.DateEnd
 		replTask.DateReminder = task.DateReminder
-		replTask.Subtasks = getSubtasksByTaskId(subtasks)
+		replTask.Subtasks = getSubtasksByTaskId(subtasks, task.Id)
 		replTasks = append(replTasks, replTask)
 	}
 	return replTasks
 }
 
-func getSubtasksByTaskId(subtasks []domain.Subtask) []domain.ReplSubtask {
+func getSubtasksByTaskId(subtasks []domain.Subtask, taskId int32) []domain.ReplSubtask {
 	var replSubtasks []domain.ReplSubtask
 
 	for _, subtask := range subtasks {
-		replSubtasks = append(replSubtasks, trimIdsFromSubtask(subtask))
+		if subtask.TaskId == taskId {
+			replSubtasks = append(replSubtasks, trimIdsFromSubtask(subtask))
+		}
 	}
 
 	return replSubtasks
