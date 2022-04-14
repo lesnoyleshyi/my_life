@@ -7,6 +7,7 @@ import (
 )
 
 type handler struct {
+	authHandler    *authHandler
 	userHandler    *userHandler
 	sectionHandler *sectionHandler
 	taskHandler    *taskHandler
@@ -15,6 +16,7 @@ type handler struct {
 
 func NewHandler(service *services.Service) *handler {
 	return &handler{
+		authHandler:    newAuthHandler(service),
 		userHandler:    newUserHandler(service),
 		sectionHandler: newSectionHandler(service),
 		taskHandler:    newTaskHandler(service),
@@ -30,26 +32,26 @@ func (h *handler) Routes() chi.Router {
 	))
 
 	r.Route("/", func(r chi.Router) {
-		r.Post("/sign-up", h.signUp)
-		r.Post("/sign-in", h.signIn)
+		r.Post("/sign-up", h.authHandler.signUp)
+		r.Post("/sign-in", h.authHandler.signIn)
 	})
 
-	r.With(h.verifyToken).Route("/lists", func(r chi.Router) {
+	r.With(h.authHandler.verifyToken).Route("/lists", func(r chi.Router) {
 		r.Post("/", h.createList)
 		r.Get("/", h.getListsByUId)
 	})
 
-	r.With(h.verifyToken).Route("/sections", func(r chi.Router) {
+	r.With(h.authHandler.verifyToken).Route("/sections", func(r chi.Router) {
 		r.Post("/", h.sectionHandler.createSection)
 		r.Get("/", h.sectionHandler.getSectionsByUId)
 	})
 
-	r.With(h.verifyToken).Route("/tasks", func(r chi.Router) {
+	r.With(h.authHandler.verifyToken).Route("/tasks", func(r chi.Router) {
 		r.Post("/", h.taskHandler.createTask)
 		r.Get("/", h.taskHandler.getTasksByUId)
 	})
 
-	r.With(h.verifyToken).Route("/subtasks", func(r chi.Router) {
+	r.With(h.authHandler.verifyToken).Route("/subtasks", func(r chi.Router) {
 		r.Post("/", h.subtaskHandler.createSubtask)
 		r.Get("/", h.subtaskHandler.getSubTasksByUId)
 	})

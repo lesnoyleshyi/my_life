@@ -5,8 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"my_life/internal/domain"
+	"my_life/internal/services"
 	"net/http"
 )
+
+type authHandler struct {
+	services *services.Service
+}
+
+func newAuthHandler(services *services.Service) *authHandler {
+	return &authHandler{
+		services: services,
+	}
+}
 
 type usernamePasswd struct {
 	Name   string `json:"name"`
@@ -17,7 +28,7 @@ type usernamePasswd struct {
 // если в json-е не будет передано какое-то поле,
 // то соответствующее поле структуры просто получит дефолтное нулевое значение.
 // Нужна валидация полей структуры.
-func (h *handler) signUp(w http.ResponseWriter, r *http.Request) {
+func (h *authHandler) signUp(w http.ResponseWriter, r *http.Request) {
 	var user domain.User
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -35,7 +46,7 @@ func (h *handler) signUp(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *handler) signIn(w http.ResponseWriter, r *http.Request) {
+func (h *authHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	var user usernamePasswd
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -59,6 +70,6 @@ func (h *handler) signIn(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(token))
 }
 
-func (h *handler) verifyToken(next http.Handler) http.Handler {
+func (h *authHandler) verifyToken(next http.Handler) http.Handler {
 	return h.services.VerifyToken(next)
 }
