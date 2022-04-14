@@ -7,7 +7,7 @@ import (
 )
 
 type handler struct {
-	services       *services.Service
+	userHandler    *userHandler
 	sectionHandler *sectionHandler
 	taskHandler    *taskHandler
 	subtaskHandler *subtaskHandler
@@ -15,7 +15,7 @@ type handler struct {
 
 func NewHandler(service *services.Service) *handler {
 	return &handler{
-		services:       service,
+		userHandler:    newUserHandler(service),
 		sectionHandler: newSectionHandler(service),
 		taskHandler:    newTaskHandler(service),
 		subtaskHandler: newSubtaskHandler(service),
@@ -55,7 +55,8 @@ func (h *handler) Routes() chi.Router {
 	})
 
 	r.Route("/users", func(r chi.Router) {
-		r.Get("/", h.getUserById)
+		r.Get("/", h.userHandler.getUserById)
+		r.Get("/full", h.userHandler.getFullUserInfo)
 	})
 
 	return r

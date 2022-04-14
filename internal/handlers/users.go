@@ -2,12 +2,23 @@ package handlers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log"
+	"my_life/internal/services"
 	"net/http"
 	"strconv"
 )
 
-func (h handler) getUserById(w http.ResponseWriter, r *http.Request) {
+type userHandler struct {
+	services *services.Service
+}
+
+func newUserHandler(services *services.Service) *userHandler {
+	return &userHandler{services: services}
+}
+
+func (h userHandler) getUserById(w http.ResponseWriter, r *http.Request) {
 	sUId := r.URL.Query().Get("UId")
 
 	if sUId == "" {
@@ -28,5 +39,29 @@ func (h handler) getUserById(w http.ResponseWriter, r *http.Request) {
 	}
 	if _, err := fmt.Fprintf(w, "There is user with UId=%d in database", user.UId); err != nil {
 		http.Error(w, "Something went wrong on the server side", http.StatusInternalServerError)
+	}
+}
+
+func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
+	UId, ok := r.Context().Value("UId").(int32)
+	if !ok {
+		http.Error(w, "kaka", http.StatusUnauthorized)
+		return
+	}
+
+	tasks, err := h.services.GetFullUserInfo(r.Context(), UId)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error receiveing tasks: %v", err), http.StatusInternalServerError)
+	}
+
+	for _, task := range tasks {
+		taskJSON, err := json.Marshal(task)
+		if err != nil {
+			log.Printf("can't marshall task to JSON: %v", err)
+			return
+		}
+		if _, err := fmt.Fprintln(w, string(taskJSON)); err != nil {
+			http.Error(w, "can't write JSON to body", http.StatusInternalServerError)
+		}
 	}
 }

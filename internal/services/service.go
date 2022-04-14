@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"my_life/internal/domain"
 	"my_life/internal/repository"
 	"net/http"
 )
@@ -18,6 +19,7 @@ type TaskList interface {
 
 type User interface {
 	repository.User
+	GetFullUserInfo(ctx context.Context, UId int32) ([]domain.ReplTask, error)
 }
 
 type TaskSection interface {
