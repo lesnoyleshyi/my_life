@@ -37,7 +37,7 @@ func (h userHandler) getUserById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error recieving user by this UId: %s", err), http.StatusInternalServerError)
 		return
 	}
-	if _, err := fmt.Fprintf(w, "There is user with UId=%d in database", user.UId); err != nil {
+	if _, err := fmt.Fprintf(w, "There is user with UId=%domain in database", user.UId); err != nil {
 		http.Error(w, "Something went wrong on the server side", http.StatusInternalServerError)
 	}
 }
@@ -49,19 +49,17 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tasks, err := h.services.GetFullUserInfo(r.Context(), UId)
+	reply, err := h.services.GetFullUserInfo(r.Context(), UId)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error receiveing tasks: %v", err), http.StatusInternalServerError)
 	}
 
-	for _, task := range tasks {
-		taskJSON, err := json.Marshal(task)
-		if err != nil {
-			log.Printf("can't marshall task to JSON: %v", err)
-			return
-		}
-		if _, err := fmt.Fprintln(w, string(taskJSON)); err != nil {
-			http.Error(w, "can't write JSON to body", http.StatusInternalServerError)
-		}
+	replyJSON, err := json.Marshal(reply)
+	if err != nil {
+		log.Printf("can't marshall task to JSON: %v", err)
+		return
+	}
+	if _, err := fmt.Fprintln(w, string(replyJSON)); err != nil {
+		http.Error(w, "can't write JSON to body", http.StatusInternalServerError)
 	}
 }

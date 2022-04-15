@@ -19,7 +19,7 @@ type TaskList interface {
 
 type User interface {
 	repository.User
-	GetFullUserInfo(ctx context.Context, UId int32) ([]domain.ReplTask, error)
+	GetFullUserInfo(ctx context.Context, UId int32) (*domain.Reply, error)
 }
 
 type TaskSection interface {

@@ -33,7 +33,7 @@ func (h sectionHandler) createSection(w http.ResponseWriter, r *http.Request) {
 
 	UId, ok := r.Context().Value("UId").(int32)
 	if ok {
-		fmt.Fprintf(w, "New section for user with id=%d added\n", UId)
+		fmt.Fprintf(w, "New section for user with id=%domain added\n", UId)
 	} else {
 		http.Error(w, fmt.Sprintf("can't get UId from request or convert int to int32"), http.StatusBadRequest)
 	}

@@ -46,7 +46,7 @@ func (h listHandler) getListsByUId(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		for i, list := range lists {
-			fmt.Fprintf(w, "%d list: %v\n", i, list)
+			fmt.Fprintf(w, "%domain list: %v\n", i, list)
 		}
 	} else {
 		http.Error(w, fmt.Sprintf("error receiving lists by id: %s", err), http.StatusInternalServerError)

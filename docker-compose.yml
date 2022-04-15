@@ -31,9 +31,9 @@ services:
       - POSTGRES_PASSWORD=8246go
     volumes:
       - postgres_storage:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/1_init.sql
+      - ./init.sql:/docker-entrypoint-initdb.domain/1_init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U go_user -d taskstore"]
+      test: ["CMD-SHELL", "pg_isready -U go_user -domain taskstore"]
       interval: 10s
       timeout: 45s
       retries: 3

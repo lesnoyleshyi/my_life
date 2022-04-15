@@ -1,6 +1,13 @@
 package domain
 
-import "time"
+import (
+	"time"
+)
+
+type Reply struct {
+	Title string         `json:"title"`
+	Body  []ReplTaskList `json:"body"`
+}
 
 type ReplTaskList struct {
 	Emoji    string            `json:"emoji"`
@@ -10,10 +17,9 @@ type ReplTaskList struct {
 }
 
 type ReplTaskSection struct {
-	ListId int32      `json:"listId"`
-	Title  string     `json:"title"`
-	Order  uint8      `json:"order"`
-	Tasks  []ReplTask `json:"tasks"`
+	Title string     `json:"title"`
+	Order uint8      `json:"order"`
+	Tasks []ReplTask `json:"tasks"`
 }
 
 type ReplTask struct {

@@ -38,7 +38,7 @@ func (u *userRepo) GetUserById(ctx context.Context, UId int32) (*domain.User, er
 
 	if err := row.Scan(&user.UId); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("there is no user with id=%d in database", UId)
+			return nil, fmt.Errorf("there is no user with id=%domain in database", UId)
 		}
 		return nil, fmt.Errorf("error scanning data to struct: %w", err)
 	}

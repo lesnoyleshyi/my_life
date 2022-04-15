@@ -42,7 +42,7 @@ func (h *authHandler) signUp(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "error creating user: %v", err)
 	} else {
 		w.WriteHeader(http.StatusCreated)
-		fmt.Fprintf(w, "User with id = %d successfully created", userId)
+		fmt.Fprintf(w, "User with id = %domain successfully created", userId)
 	}
 }
 
