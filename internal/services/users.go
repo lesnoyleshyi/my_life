@@ -2,7 +2,6 @@ package services
 
 import (
 	"context"
-	"fmt"
 	d "my_life/internal/domain"
 	"my_life/internal/repository"
 )
@@ -19,8 +18,7 @@ func (s UserService) GetUserById(ctx context.Context, UId int32) (*d.User, error
 	return s.repo.GetUserById(ctx, UId)
 }
 
-func (s UserService) GetFullUserInfo(ctx context.Context, UId int32) (*d.Reply, error) {
-	var reply d.Reply
+func (s UserService) GetFullUserInfo(ctx context.Context, UId int32) ([]d.ReplTaskList, error) {
 
 	subtasks, err := s.repo.GetSubTasksByUId(ctx, UId)
 	if err != nil {
@@ -40,10 +38,7 @@ func (s UserService) GetFullUserInfo(ctx context.Context, UId int32) (*d.Reply, 
 	}
 	replLists := bindAndTrimIds(lists, sections, tasks, subtasks)
 
-	reply.Title = fmt.Sprintf("User %d", UId)
-	reply.Body = replLists
-
-	return &reply, nil
+	return replLists, nil
 }
 
 func bindAndTrimIds(lists []d.TaskList, sections []d.TaskSection, tasks []d.Task, subtasks []d.Subtask) []d.ReplTaskList {

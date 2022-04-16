@@ -4,9 +4,11 @@ import (
 	"time"
 )
 
-type Reply struct {
-	Title string         `json:"title"`
-	Body  []ReplTaskList `json:"body"`
+type Response struct {
+	Success bool   `json:"success"`
+	Body    []byte `json:"body,omitempty"`
+	ErrCode int    `json:"errCode,omitempty"`
+	ErrMsg  []byte `json:"errMsg,omitempty"`
 }
 
 type ReplTaskList struct {

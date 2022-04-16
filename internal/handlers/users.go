@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"my_life/internal/domain"
 	"my_life/internal/services"
 	"net/http"
 	"strconv"
@@ -43,23 +44,34 @@ func (h userHandler) getUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
+	response := domain.Response{Success: true}
+
 	UId, ok := r.Context().Value("UId").(int32)
 	if !ok {
 		http.Error(w, "kaka", http.StatusUnauthorized)
 		return
 	}
 
-	reply, err := h.services.GetFullUserInfo(r.Context(), UId)
+	lists, err := h.services.GetFullUserInfo(r.Context(), UId)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error receiveing tasks: %v", err), http.StatusInternalServerError)
 	}
 
-	replyJSON, err := json.Marshal(reply)
+	response.Body, err = json.Marshal(lists)
 	if err != nil {
 		log.Printf("can't marshall task to JSON: %v", err)
-		return
+		response.Success = false
+		response.ErrCode = http.StatusInternalServerError
+		response.ErrMsg = []byte("marshalling problems")
 	}
-	if _, err := fmt.Fprintln(w, string(replyJSON)); err != nil {
+	resp, err := json.Marshal(response)
+	if err != nil {
+		log.Printf("can't marshall task to JSON: %v", err)
+		response.Success = false
+		response.ErrCode = http.StatusInternalServerError
+		response.ErrMsg = []byte("marshalling problems")
+	}
+	if _, err := fmt.Fprintln(w, string(resp)); err != nil {
 		http.Error(w, "can't write JSON to body", http.StatusInternalServerError)
 	}
 }
