@@ -1,16 +1,8 @@
 package domain
 
 import (
-	"encoding/json"
 	"time"
 )
-
-type Response struct {
-	Success bool            `json:"success"`
-	Body    json.RawMessage `json:"body,omitempty"`
-	ErrCode int             `json:"errCode,omitempty"`
-	ErrMsg  string          `json:"errMsg,omitempty"`
-}
 
 type ReplTaskList struct {
 	Emoji    string            `json:"emoji"`
