@@ -53,11 +53,6 @@ func (h *handler) Routes() chi.Router {
 		r.Get("/", h.taskHandler.getTasksByUId)
 	})
 
-	r.With(h.authHandler.verifyToken).Route("/subtasks", func(r chi.Router) {
-		r.Post("/", h.subtaskHandler.createSubtask)
-		r.Get("/", h.subtaskHandler.getSubTasksByUId)
-	})
-
 	r.With(h.authHandler.verifyToken).Route("/users", func(r chi.Router) {
 		r.Get("/", h.userHandler.getUserById)
 		r.Get("/full", h.userHandler.getFullUserInfo)

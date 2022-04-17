@@ -6,9 +6,9 @@ import (
 
 type Response struct {
 	Success bool   `json:"success"`
-	Body    []byte `json:"body,omitempty"`
+	Body    string `json:"body,omitempty"`
 	ErrCode int    `json:"errCode,omitempty"`
-	ErrMsg  []byte `json:"errMsg,omitempty"`
+	ErrMsg  string `json:"errMsg,omitempty"`
 }
 
 type ReplTaskList struct {

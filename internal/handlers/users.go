@@ -57,19 +57,19 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error receiveing tasks: %v", err), http.StatusInternalServerError)
 	}
 
-	response.Body, err = json.Marshal(lists)
+	respByte, err := json.Marshal(lists)
 	if err != nil {
 		log.Printf("can't marshall task to JSON: %v", err)
 		response.Success = false
 		response.ErrCode = http.StatusInternalServerError
-		response.ErrMsg = []byte("marshalling problems")
+		response.ErrMsg = "marshalling problems"
 	}
-	resp, err := json.Marshal(response)
+	resp, err := json.Marshal(respByte)
 	if err != nil {
 		log.Printf("can't marshall task to JSON: %v", err)
 		response.Success = false
 		response.ErrCode = http.StatusInternalServerError
-		response.ErrMsg = []byte("marshalling problems")
+		response.ErrMsg = "marshalling problems"
 	}
 	if _, err := fmt.Fprintln(w, string(resp)); err != nil {
 		http.Error(w, "can't write JSON to body", http.StatusInternalServerError)
