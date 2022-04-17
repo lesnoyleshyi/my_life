@@ -52,19 +52,19 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	lists, err := h.services.GetFullUserInfo(r.Context(), UId)
+	replLists, err := h.services.GetFullUserInfo(r.Context(), UId)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error receiveing tasks: %v", err), http.StatusInternalServerError)
 	}
 
-	respByte, err := json.Marshal(lists)
+	byteLists, err := json.Marshal(replLists)
 	if err != nil {
-		log.Printf("can't marshall task to JSON: %v", err)
 		response.Success = false
 		response.ErrCode = http.StatusInternalServerError
 		response.ErrMsg = "marshalling problems"
 	}
-	resp, err := json.Marshal(respByte)
+	response.Body = string(byteLists)
+	resp, err := json.Marshal(response)
 	if err != nil {
 		log.Printf("can't marshall task to JSON: %v", err)
 		response.Success = false
