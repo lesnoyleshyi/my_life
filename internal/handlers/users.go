@@ -60,18 +60,15 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("error receiveing tasks: %v", err), http.StatusInternalServerError)
 	}
 
-	var strLists []string
-
-	for _, keka := range replTaskLists {
-		bBiba, err := json.Marshal(keka)
-		if err != nil {
-			log.Printf("lol: %v", err)
-		}
-		biba := string(bBiba)
-		strLists = append(strLists, biba)
+	byteLists, err := json.Marshal(replTaskLists)
+	if err != nil {
+		log.Printf("can't marshall task to JSON: %v", err)
+		response.Success = false
+		response.ErrCode = http.StatusInternalServerError
+		response.ErrMsg = "marshalling problems"
+		return
 	}
-
-	response.Body = strLists
+	response.Body = json.RawMessage(byteLists)
 
 	resp, err := json.Marshal(response)
 	if err != nil {

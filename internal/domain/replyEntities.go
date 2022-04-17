@@ -1,14 +1,15 @@
 package domain
 
 import (
+	"encoding/json"
 	"time"
 )
 
 type Response struct {
-	Success bool     `json:"success"`
-	Body    []string `json:"body,omitempty"`
-	ErrCode int      `json:"errCode,omitempty"`
-	ErrMsg  string   `json:"errMsg,omitempty"`
+	Success bool            `json:"success"`
+	Body    json.RawMessage `json:"body,omitempty"`
+	ErrCode int             `json:"errCode,omitempty"`
+	ErrMsg  string          `json:"errMsg,omitempty"`
 }
 
 type ReplTaskList struct {
@@ -44,4 +45,8 @@ type ReplSubtask struct {
 	Title       string `json:"title"`
 	IsCompleted bool   `json:"isCompleted"`
 	Order       uint8  `json:"order"`
+}
+
+func (r Response) MarshalJSON() ([]byte, error) {
+
 }
