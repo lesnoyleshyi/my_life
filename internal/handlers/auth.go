@@ -51,20 +51,17 @@ func (h *authHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	var response Response
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		errResponse(&response, http.StatusBadRequest, "error unmarshalling json")
+		errResponse(err, http.StatusBadRequest, "error unmarshalling json", w)
 		return
 	}
 	if user.Name == "" || user.Passwd == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		errResponse(&response, http.StatusBadRequest, "Empty username or password")
+		errResponse(nil, http.StatusBadRequest, "Empty username or password", w)
 		return
 	}
 
 	token, err := h.services.GenerateToken(context.TODO(), user.Name, user.Passwd)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		errResponse(&response, http.StatusBadRequest, "error generating token")
+		errResponse(err, http.StatusBadRequest, "error generating token", w)
 		return
 	}
 
