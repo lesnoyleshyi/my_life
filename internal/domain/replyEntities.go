@@ -5,10 +5,10 @@ import (
 )
 
 type Response struct {
-	Success bool   `json:"success"`
-	Body    string `json:"body,omitempty"`
-	ErrCode int    `json:"errCode,omitempty"`
-	ErrMsg  string `json:"errMsg,omitempty"`
+	Success bool     `json:"success"`
+	Body    []string `json:"body,omitempty"`
+	ErrCode int      `json:"errCode,omitempty"`
+	ErrMsg  string   `json:"errMsg,omitempty"`
 }
 
 type ReplTaskList struct {
