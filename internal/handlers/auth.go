@@ -48,26 +48,35 @@ func (h *authHandler) signUp(w http.ResponseWriter, r *http.Request) {
 
 func (h *authHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	var user usernamePasswd
+	var response Response
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Something went wrong while unmarshalling json"))
+		errResponse(&response, http.StatusBadRequest, "error unmarshalling json")
 		return
 	}
 	if user.Name == "" || user.Passwd == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("Empty username or password"))
+		errResponse(&response, http.StatusBadRequest, "Empty username or password")
 		return
 	}
 
 	token, err := h.services.GenerateToken(context.TODO(), user.Name, user.Passwd)
 	if err != nil {
-		fmt.Fprintf(w, "error generating token: %v", err)
+		w.WriteHeader(http.StatusBadRequest)
+		errResponse(&response, http.StatusBadRequest, "error generating token")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(token))
+	response.Body = json.RawMessage(token)
+	resp, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "error marshalling response", http.StatusInternalServerError)
+		return
+	}
+	if _, err := w.Write(resp); err != nil {
+		http.Error(w, "error writing to body", http.StatusInternalServerError)
+	}
 }
 
 func (h *authHandler) verifyToken(next http.Handler) http.Handler {

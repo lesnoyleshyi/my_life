@@ -47,6 +47,7 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 
 	UId, ok := r.Context().Value("UId").(int32)
 	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
 		errResponse(&response, http.StatusUnauthorized, "missing or invalid token")
 		return
 	}
@@ -59,6 +60,7 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 	byteLists, err := json.Marshal(replTaskLists)
 	if err != nil {
 		log.Printf("can't marshall task to JSON: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		errResponse(&response, http.StatusInternalServerError, "marshalling problems")
 		return
 	}
@@ -67,6 +69,7 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 	resp, err := json.Marshal(response)
 	if err != nil {
 		log.Printf("can't marshall task to JSON: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
 		errResponse(&response, http.StatusInternalServerError, "marshalling problems")
 	}
 	if _, err := w.Write(resp); err != nil {
