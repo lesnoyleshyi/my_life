@@ -46,7 +46,3 @@ type ReplSubtask struct {
 	IsCompleted bool   `json:"isCompleted"`
 	Order       uint8  `json:"order"`
 }
-
-func (r Response) MarshalJSON() ([]byte, error) {
-
-}
