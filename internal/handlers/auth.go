@@ -64,8 +64,8 @@ func (h *authHandler) signIn(w http.ResponseWriter, r *http.Request) {
 		errResponse(err, http.StatusBadRequest, "error generating token", w)
 		return
 	}
+	response.Token = token
 
-	response.Body = json.RawMessage(token)
 	resp, err := json.Marshal(response)
 	if err != nil {
 		http.Error(w, "error marshalling response", http.StatusInternalServerError)
