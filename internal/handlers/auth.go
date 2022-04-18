@@ -48,7 +48,7 @@ func (h *authHandler) signUp(w http.ResponseWriter, r *http.Request) {
 
 func (h *authHandler) signIn(w http.ResponseWriter, r *http.Request) {
 	var user usernamePasswd
-	var response Response
+	response := Response{Success: true}
 
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
 		errResponse(err, http.StatusBadRequest, "error unmarshalling json", w)

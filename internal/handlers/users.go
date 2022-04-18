@@ -41,6 +41,16 @@ func (h userHandler) getUserById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//	Returns full user info	godoc
+//  @Description        Returns lists
+//  @Summary            Returns full user info
+//  @Tags               Lists
+//  @Accept             json
+//  @Produce            json
+//  @Success            default  {object}  domain.Response
+//  @Failure            default  {object}  domain.Response
+//  @Router             /users/full  [get]
+
 func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 	response := Response{Success: true}
 

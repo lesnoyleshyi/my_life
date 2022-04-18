@@ -19,7 +19,7 @@ type Response struct {
 	Success  bool                     `json:"success"`
 	ErrCode  int                      `json:"errCode,omitempty"`
 	ErrMsg   string                   `json:"errMsg,omitempty"`
-	Token    string                   `json:"token"`
+	Token    string                   `json:"token,omitempty"`
 	Lists    []domain.ReplTaskList    `json:"lists,omitempty"`
 	Sections []domain.ReplTaskSection `json:"sections,omitempty"`
 	Tasks    []domain.ReplTask        `json:"tasks,omitempty"`
