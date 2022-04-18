@@ -55,13 +55,7 @@ func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 		errResponse(err, http.StatusInternalServerError, "can't retrieve data frm db", w)
 		return
 	}
-
-	byteLists, err := json.Marshal(replTaskLists)
-	if err != nil {
-		errResponse(err, http.StatusInternalServerError, "marshalling problems", w)
-		return
-	}
-	response.Body = json.RawMessage(byteLists)
+	response.Lists = replTaskLists
 
 	resp, err := json.Marshal(response)
 	if err != nil {

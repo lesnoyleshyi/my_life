@@ -3,14 +3,26 @@ package handlers
 import (
 	"encoding/json"
 	"log"
+	"my_life/internal/domain"
 	"net/http"
 )
 
+//// Another variant of response struct
+//type Response struct {
+//	Success  bool                     `json:"success"`
+//	Body     json.RawMessage          `json:"body,omitempty"`
+//	ErrCode  int                      `json:"errCode,omitempty"`
+//	ErrMsg   string                   `json:"errMsg,omitempty"`
+//}
+
 type Response struct {
-	Success bool            `json:"success"`
-	Body    json.RawMessage `json:"body,omitempty"`
-	ErrCode int             `json:"errCode,omitempty"`
-	ErrMsg  string          `json:"errMsg,omitempty"`
+	Success  bool                     `json:"success"`
+	ErrCode  int                      `json:"errCode,omitempty"`
+	ErrMsg   string                   `json:"errMsg,omitempty"`
+	Lists    []domain.ReplTaskList    `json:"lists,omitempty"`
+	Sections []domain.ReplTaskSection `json:"sections,omitempty"`
+	Tasks    []domain.ReplTask        `json:"tasks,omitempty"`
+	Subtasks []domain.ReplSubtask     `json:"subtasks,omitempty"`
 }
 
 func errResponse(errToLog error, errCode int, errMsg string, w http.ResponseWriter) {
