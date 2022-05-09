@@ -1,6 +1,0 @@
-name: sample_workflow
-on: [push]
-jobs:
-    build_api:
-        runs-on: ubuntu-latest
-        steps:
