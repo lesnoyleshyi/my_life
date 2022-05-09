@@ -39,6 +39,18 @@ services:
       retries: 3
     restart: on-failure
 
+  mongo:
+    image: mongo:latest
+    container_name: mongo_my_life
+    networks:
+      - aboba_network
+    hostname: mongo_my_life
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=go_user
+      - MONGO_INITDB_ROOT_PASSWORD=8246go
+    restart: on-failure
+
+
 volumes:
   postgres_storage:
 

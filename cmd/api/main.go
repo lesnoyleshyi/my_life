@@ -14,13 +14,6 @@ import (
 
 const connstr = "postgres://go_user:8246go@postgres_my_life:5432/taskstore"
 
-// @title			API for My Life application
-// @version			0.1
-// @description		It's made for testing purposes only
-
-// @host			132.226.200.167:8080
-// @BasePAth		/
-
 func main() {
 	dbPool, err := postgres.NewPool(connstr)
 	if err != nil {

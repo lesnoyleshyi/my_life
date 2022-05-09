@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	_ "my_life/docs"
 	"my_life/internal/services"
 	"net/http"
 	"strconv"
@@ -40,16 +41,6 @@ func (h userHandler) getUserById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Something went wrong on the server side", http.StatusInternalServerError)
 	}
 }
-
-//	Returns full user info	godoc
-//  @Description        Returns lists
-//  @Summary            Returns full user info
-//  @Tags               Lists
-//  @Accept             json
-//  @Produce            json
-//  @Success            default  {object}  domain.Response
-//  @Failure            default  {object}  domain.Response
-//  @Router             /users/full  [get]
 
 func (h userHandler) getFullUserInfo(w http.ResponseWriter, r *http.Request) {
 	response := Response{Success: true}

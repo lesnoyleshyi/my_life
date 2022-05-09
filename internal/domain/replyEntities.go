@@ -38,3 +38,19 @@ type ReplSubtask struct {
 	IsCompleted bool   `json:"isCompleted"`
 	Order       uint8  `json:"order"`
 }
+
+type UsernamePasswd struct {
+	Name   string `json:"name"`
+	Passwd string `json:"password"`
+}
+
+type Response struct {
+	Success  bool              `json:"success"`
+	ErrCode  int               `json:"errCode,omitempty"`
+	ErrMsg   string            `json:"errMsg,omitempty"`
+	Token    string            `json:"token,omitempty"`
+	Lists    []ReplTaskList    `json:"lists,omitempty"`
+	Sections []ReplTaskSection `json:"sections,omitempty"`
+	Tasks    []ReplTask        `json:"tasks,omitempty"`
+	Subtasks []ReplSubtask     `json:"subtasks,omitempty"`
+}

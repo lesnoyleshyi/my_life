@@ -1,4 +1,197 @@
+basePath: /
+consumes:
+- application/json
+definitions:
+  ReplSubtask:
+    properties:
+      isCompleted:
+        type: boolean
+        x-go-name: IsCompleted
+      order:
+        format: uint8
+        type: integer
+        x-go-name: Order
+      title:
+        type: string
+        x-go-name: Title
+    type: object
+    x-go-package: my_life/internal/domain
+  ReplTask:
+    properties:
+      completedDays:
+        type: string
+        x-go-name: CompletedDays
+      concreteDate:
+        format: date-time
+        type: string
+        x-go-name: ConcreteDate
+      dateEnd:
+        format: date-time
+        type: string
+        x-go-name: DateEnd
+      dateReminder:
+        format: date-time
+        type: string
+        x-go-name: DateReminder
+      dateStart:
+        format: date-time
+        type: string
+        x-go-name: DateStart
+      daysOfMonth:
+        type: string
+        x-go-name: DaysOfMonth
+      daysOfWeek:
+        type: string
+        x-go-name: DaysOfWeek
+      isCompleted:
+        type: boolean
+        x-go-name: IsCompleted
+      note:
+        type: string
+        x-go-name: Note
+      order:
+        format: uint8
+        type: integer
+        x-go-name: Order
+      repeatType:
+        type: string
+        x-go-name: RepeatType
+      subtasks:
+        items:
+          $ref: '#/definitions/ReplSubtask'
+        type: array
+        x-go-name: Subtasks
+      title:
+        type: string
+        x-go-name: Title
+    type: object
+    x-go-package: my_life/internal/domain
+  ReplTaskList:
+    properties:
+      emoji:
+        type: string
+        x-go-name: Emoji
+      order:
+        format: uint8
+        type: integer
+        x-go-name: Order
+      sections:
+        items:
+          $ref: '#/definitions/ReplTaskSection'
+        type: array
+        x-go-name: Sections
+      title:
+        type: string
+        x-go-name: Title
+    type: object
+    x-go-package: my_life/internal/domain
+  ReplTaskSection:
+    properties:
+      order:
+        format: uint8
+        type: integer
+        x-go-name: Order
+      tasks:
+        items:
+          $ref: '#/definitions/ReplTask'
+        type: array
+        x-go-name: Tasks
+      title:
+        type: string
+        x-go-name: Title
+    type: object
+    x-go-package: my_life/internal/domain
+  Response:
+    properties:
+      errCode:
+        format: int64
+        type: integer
+        x-go-name: ErrCode
+      errMsg:
+        type: string
+        x-go-name: ErrMsg
+      lists:
+        items:
+          $ref: '#/definitions/ReplTaskList'
+        type: array
+        x-go-name: Lists
+      sections:
+        items:
+          $ref: '#/definitions/ReplTaskSection'
+        type: array
+        x-go-name: Sections
+      subtasks:
+        items:
+          $ref: '#/definitions/ReplSubtask'
+        type: array
+        x-go-name: Subtasks
+      success:
+        type: boolean
+        x-go-name: Success
+      tasks:
+        items:
+          $ref: '#/definitions/ReplTask'
+        type: array
+        x-go-name: Tasks
+      token:
+        type: string
+        x-go-name: Token
+    type: object
+    x-go-package: my_life/internal/domain
+  UsernamePasswd:
+    properties:
+      name:
+        type: string
+        x-go-name: Name
+      password:
+        type: string
+        x-go-name: Passwd
+    type: object
+    x-go-package: my_life/internal/domain
+host: 132.226.200.167:8080
 info:
-  contact: {}
-paths: {}
+  description: Test documentation of test version of my_life API
+  title: my_life
+  version: 0.0.1
+paths:
+  /sign-in:
+    post:
+      operationId: idOfSignIn
+      parameters:
+      - description: Server wants username and password in HTTP body.
+        in: body
+        name: Data
+        schema:
+          $ref: '#/definitions/UsernamePasswd'
+      responses:
+        "201":
+          $ref: '#/responses/resp201'
+        "400":
+          $ref: '#/responses/resp400'
+        "500":
+          $ref: '#/responses/resp500'
+      summary: Receives JSON with login and password in body, responds with auth token.
+      tags:
+      - auth
+produces:
+- application/json
+responses:
+  resp201:
+    description: Server returns JSON with status "success" or "error" and relevant
+      data (token or error description).
+    schema:
+      $ref: '#/definitions/Response'
+  resp400:
+    description: Returns 400 error when can't find "name" or/and "password" values.
+    schema:
+      $ref: '#/definitions/Response'
+  resp500:
+    description: Returns when faces some internal errors.
+    schema:
+      $ref: '#/definitions/Response'
+schemes:
+- http
+securityDefinitions:
+  basic:
+    type: basic
 swagger: "2.0"
